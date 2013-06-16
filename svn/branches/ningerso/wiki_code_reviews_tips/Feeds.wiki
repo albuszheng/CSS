@@ -1,0 +1,24 @@
+#summary Information on Project hosting feeds.
+
+= Introduction =
+
+Google Code exports [http://en.wikipedia.org/wiki/Atom_(standard) Atom feeds] for issue updates, SVN commits, downloads, and a stream of all project updates.
+
+= Details =
+
+Substitute your project name for *PROJECT-NAME*:
+
+     `http://code.google.com/feeds/p/PROJECT-NAME/issueupdates/basic`
+
+     `http://code.google.com/feeds/p/PROJECT-NAME/svnchanges/basic`
+
+     `http://code.google.com/feeds/p/PROJECT-NAME/downloads/basic`
+
+     `http://code.google.com/feeds/p/PROJECT-NAME/updates/basic`
+
+
+The SVN commit feeds also have a *path=* URL parameter that will let you filter changes by path.  For example:
+
+     http://code.google.com/feeds/p/v8/svnchanges/basic?path=/wiki/
+
+The path is a prefix that matches files in the commits, so include the trailing slash.

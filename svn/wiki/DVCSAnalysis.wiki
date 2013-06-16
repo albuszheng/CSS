@@ -1,0 +1,87 @@
+#summary Analysis of Git and Mercurial
+#labels Mercurial
+
+= Analysis of Git and Mercurial =
+
+_Note: this analysis was done in summer 2008, when we first began scoping work for DVCS support in Google Code._
+
+== Introduction ==
+
+This document summarizes the initial research for adding distributed version control as an option for Google Code. Based on popularity, two distributed version control systems were considered: Git and Mercurial. This document describes the features of the two systems, and provides an overview of the work required to integrate them with Google Code.
+
+== Distributed Version Control ==
+
+In traditional version control systems, there is a central repository that maintains all history. Clients must interact with this repository to examine file history, look at other branches, or commit changes. Typically, clients have a local copy of the versions of files they are working on, but no local storage of previous versions or alternate branches.
+
+Distributed Version Control Systems (DVCS) use a different structure. With DVCS, every user has their own local repository, complete with project history, branches, etc. Switching to an alternate branch, examining file history, and even committing changes are all local operations. Individual repositories can then exchange information via push and pull operations. A push transfers some local information to a remote repository, and a pull copies remote information to the local repository. Note that neither repository is necessarily "authoritative" with respect to the other. Both repositories may have some local history that the other does not have yet. One key feature of any DVCS system is to make it easy for repositories to unambiguously describe the history they have (and the history they are requesting). Both Git and Mercurial do this by using SHA1 hashes to identify data (files, trees, changesets, etc).
+
+DVCS's provide a lot of flexibility in developer workflows. They can be used in a manner similar to traditional VCS's, with a central "authoritative" repository with which each developer synchronizes. For larger projects, it is also possible to have a hierarchy of server repositories, with maintainers for each repository accepting changes from downstream developers and then forwarding them upstream. DVCS's also allow developers to share work with each other directly. For example, two developers working on a new feature could work on a common branch and share work with each other independent of an "authoritative" server. Once their work was stable, it could then be pushed to a public repository for a larger audience.
+
+Because there is no central repository, the terms client and server don't necessarily apply. When talking about two repositories, they are typically referred to as local and remote rather than client and server. However, in the context of implementing a DVCS for Google Code, the repository hosted at Google will be considered the server, and a user's repository will be called the client.
+
+== Feature Comparison ==
+
+There is actually a great deal of similarity between Git and Mercurial. Instead of providing a long list of features that are equivalently supported in both system, this section attempts to highlight areas of significant difference between the systems.
+
+=== Git Advantages ===
+
+  * Client Storage Management. Both Mercurial and Git allow users to selectively pull branches from other repositories. This provides an upfront mechanism for narrowing the amount of history stored locally. In addition, Git allows previously pulled branches to be discarded. Git also allows old revision data to be pruned from the local repository (while still keeping recent revision data on those branches). With Mercurial, if a branch is in the local repository, then all of its revisions (back to the very initial commit) must also be present, and there is no way to prune branches other than by creating a new repository and selectively pulling branches into it. There has been some work addressing this in Mercurial, but nothing official yet.
+
+  * Number of Parents. Git supports an unlimited number of parent revisions during a merge. Mercurial only allows two parents. In order to achieve an N-way merge in Mercurial, the user will have to perform N-1 two-way merges. Although in many cases this is also the preferred way to merge N parents regardless of DVCS, with Git the user can perform an N-way merge in one step if so desired.
+
+  * Rebasing. Git has a rebase command which allows you to take a local branch and change its branch point to a more recent revision. For example, if one is working on a new feature for a product, a local branch may have been started from the 1.0 release. If while still working on the feature the main product line has been updated to 1.1, it may be desirable to pull in the 1.0->1.1 changes onto the local feature branch and treat it as a branch from 1.1 instead of 1.0. In most other systems, this is done by merging the 1.1 changes onto the branch. Merging is the right thing to do from an SCM perspective, where the focus is on 'reproducibility of past states'. However, when the focus is 'authoring a clean software revision history', rebasing is sometimes a superior method. git-rebase allows you to make a previously non-linear history linear, keeping the history cleaner. To be fair, the same deltas are produced by simply merging every commit from the 1.0 version to the 1.1 version individually, and committing them individually. Rebasing is about safely doing this and then deleting the old 1.0 based versions so they don't clutter the tree. 
+
+_Note: Mercurial has added <a href="http://www.selenic.com/mercurial/wiki/index.cgi/RebaseProject">rebase support</a> since this analysis was conducted._
+
+=== Mercurial Advantages ===
+
+  * Learning Curve. Git has a steeper learning curve than Mercurial due to a number of factors. Git has more commands and options, the volume of which can be intimidating to new users. Mercurial's documentation tends to be more complete and easier for novices to read. Mercurial's terminology and commands are also a closer to Subversion and CVS, making it familiar to people migrating from those systems.
+
+  * Windows Support. Git has a strong Linux heritage, and the official way to run it under Windows is to use cygwin, which is far from ideal from the perspective of a Windows user. A MinGw based port of Git is gaining popularity, but Windows still remains a "second class citizen" in the world of Git. Based on limited testing, the MinGW port appeared to be completely functional, but a little sluggish. Operations that normally felt instantaneous on Linux or Mac OS X took several tenths of a second on Windows. Mercurial is Python based, and the official distribution runs cleanly under Windows (as well as Linux, Mac OS X, etc).
+
+  * Maintenance. Git requires periodic maintenance of repositories (i.e. git-gc), Mercurial does not require such maintenance. Note, however, that Mercurial is also a lot less sophisticated with respect to managing the clients disk space (see Client Storage Management above).
+
+  * History is Sacred. Git is extremely powerful, and will do almost anything you ask it to. Unfortunately, this also means that Git is perfectly happy to lose history. For example, git-push --force can result in revisions becoming lost in the remote repository. Mercurial's repository is structured more as an ever-growing collection of immutable objects. Although in some cases (such as rebase), rewriting history can be an advantage, it can also be dangerous and lead to unexpected results. It should be noted, however, that a custom Git server could be written to disallow the loss of data, so this advantage is minimal.
+
+
+=== Other Differences ===
+
+  * Rename/Copy Tracking. Git does not explicitly track file renaming or copying. Instead, commands such as git-log look for cases where an identical file appears earlier in the repository history and infers the rename or copy. Mercurial takes the more familiar approach of providing explicit rename and copy commands and storing this as part of the history of a file. Each approach has both advantages and disadvantages, and it isn't clear that either approach is universally "better" than the other.
+
+  * Architecture. Git was originally a large number of shell scripts and unix commands implemented in C. Over time, a common library that shared between commands has been developed, and many of the commands have been built into the main git executable. Mercurial is implemented mostly in Python (with a small amount of C), with an extension API that allows third parties to enhance Mercurial via custom Python modules.
+
+  * Private History. In Git, the default mode of operation is for developers to have their own local (and private) tags/branches/revisions, and exercise a lot of control over what becomes public. With Mercurial the emphasis is the other way around - default push/pull behavior shares all information and extra steps need to be taken to share a subset. This is not listed as an advantage for either system, because both systems are generally capable of supporting either kind of operation.
+
+  * Branch Namespace. In Git, each repository has its own branch namespace, and users set up a mapping between local branchnames and remote ones. With Mercurial, there is a single branch namespace shared by all repositories.
+
+== Implementation ==
+
+=== Data Storage ===
+
+Both Git and Mercurial internally work with very similar data: revisions of files along with a small amount of meta information (parents, author, etc). They both have objects that represent a project-wide commit, and these are also versioned. They both have objects that associate a commit with a set of file versions. In Git, this is a tree object (a tree structure with tree objects for directories and references to file revisions as the leaves). In Mercurial, there is a manifest (a flat list mapping pathnames to file revision objects). Aside from the manifest/tree difference, both are very similar in terms of how objects are searched and walked.
+
+Git uses a combination of storing objects directly in the file system (indexed by SHA1 hash) and packing multiple objects into larger compressed files, while Mercurial uses a revlog structure (basically a concatenation of revision diffs with periodic snapshots of a complete revision). In both cases, the native storage will not be used and the objects will be stored in <a href="http://labs.google.com/papers/bigtable-osdi06.pdf">Bigtable</a> instead. Due to the similarity of the basic Git and Mercurial data objects, the effort to solve such problems should be the same regardless of which DVCS is being used.
+
+The only major difference for the data storage layer is the implementation language. If a significant amount of Git/Mercurial code is to be reused, then a Git implementation would be in C, and a Mercurial one would be in Python (or perhaps C++ with SWIG bindings).
+
+=== Mercurial Integration ===
+
+Mercurial has very good support for HTTP based stateless pushing and pulling of remote repositories. A reasonable amount of effort has been made to reduce the number of round trips between client and server in determining what data needs to be exchanged, and once this determination has been made all of the relevant information is bundled into a single large transfer. This is a good match for Google's infrastructure, so no modifications will be required on the client side.
+
+=== Git Integration ===
+
+Git includes support for HTTP pulls (and `WebDAV` pushes), but the implementation assumes that the server knows nothing about Git. It is designed such that you can have a Apache simply serve the Git repository as static content. This method requires numerous synchronous round trip requests, and is unsuitable for use in Google Code <sup><b>(1)</b></sup>. 
+
+Git also has a custom stateful protocol that supports much faster exchanges of information, but this is not a good match for Google infrastructure. Specifically, it is very desirable to use a stateless HTTP protocol since there is already significant infrastructure in place to make such transactions reliable and performant. 
+
+_Note: There has been some <a href="http://kerneltrap.org/mailarchive/git/2008/8/3/2795094/thread">discussion</a> about improving HTTP support in the Git community since this analysis was done._
+
+== Summary ==
+
+In terms of implementation effort, Mercurial has a clear advantage due to its efficient HTTP transport protocol.
+
+In terms of features, Git is more powerful, but this tends to be offset by it being more complicated to use. 
+
+----
+
+<sup><b>1</b></sup> As a benchmark, Git and Mercurial repositories were seeded with approximately 1500 files totaling 35 M of data. The servers were running in Chicago and the clients in Mountain View (51 ms ping time). The operation of cloning the remote repository (similar to a initial checkout in traditional version control systems) averaged 8.1 seconds for Mercurial and 178 seconds for Git (22 times slower). A single file in the repository was then changed 50 times and the clients pulled the updates. In this case, Mercurial took 1.5 seconds and Git required 18 seconds (12 times slower). When the Git protocol was used instead of HTTP, Git's performance was similar to Mercurial (8.7 seconds for cloning, 2.8 seconds for the pull).

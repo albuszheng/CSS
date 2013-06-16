@@ -1,0 +1,293 @@
+#summary Issue Tracker Data API Developer Guide
+
+=<font color="red">Deprecated</font>=
+<font color="red">*The Issue Tracker Data API has been deprecated and will be shut down on June 14, 2013*
+
+*See http://googleblog.blogspot.com/2012/12/winter-cleaning.html *</font>
+
+-----
+
+The Issue Tracker Data API allows client applications to view and update issues on Project Hosting on Google Code in the form of Google Data API feeds. Your client application can use the Issue Tracker Data API to create new issues & issue comments, request a list of issues, request issue comments for an issue, edit existing issues, and query for issues that match a particular criteria.
+
+In addition to providing some background on the capabilities of the Issue Tracker Data API, this document provides examples of basic Data API interactions using raw XML and HTTP.
+
+<wiki:toc max_depth="2" />
+
+= Audience =
+
+This document is intended for programmers who want to write client applications that can interact with Project Hosting on Google Code using XML and HTTP. This document assumes that you understand the general ideas behind the [http://code.google.com/apis/gdata/basics.html Google Data APIs protocol], and that you're familiar with the Issue Tracker GUI.
+
+If you're using a UNIX system and want to try the examples in this document without writing any code, you may find the UNIX command-line utilities [http://curl.haxx.se/ curl] or [http://www.gnu.org/software/wget/ wget] useful; for more information, see the manual pages for those utilities.
+
+For Issue Tracker reference information, see the [IssueTrackerAPIReference Protocol reference guide].
+
+= Authentication =
+
+The following sections describe how to authenticate with Project Hosting on Google Code. Please note that you do NOT need to authenticate if you want to access issues anonymously. You will, however, have to authenticate if you wish to see issues that have permissions set on them or if you wish to create/update issues.
+
+== Authenticating `AuthSub` proxy ==
+
+`AuthSub` proxy authentication is used by web applications that need to authenticate their users to Google Accounts. The website operator and the client code don't have access to the username and password for the Project Hosting on Google Code user. Instead, the client obtains special `AuthSub` tokens that allow the client to act on a particular user's behalf. For more detailed information, see the <a href="http://code.google.com/apis/accounts/AuthForWebApps.html">`AuthSub` documentation</a>.
+
+When a user first visits your application, they have not yet been authenticated. In this case, you need to display some information indicating to the user that they are not authenticated and a link directing the user to a Google page to authenticate your request for access to their Issue Tracker.
+
+The following query parameters are included in the `AuthSubRequest` URL:
+
+||next||The URL of the page that Google should redirect the user to after authentication. ||
+||scope||Indicates that the application is requesting a token to access Project Hosting on Google Code feeds. The scope string to use is https://code.google.com/feeds/issues (URL-encoded, of course).||
+||secure||Indicates whether the client is requesting a secure token.||
+||session||Indicates whether the token returned can be exchanged for a multi-use (session) token.||
+
+The `AuthSubRequest` URL might look like this:
+
+<code>https://www.google.com/accounts/AuthSubRequest?scope=https%3A%2F%2Fcode.google.com%2Ffeeds%2Fissues%2F&amp;session=1&amp;secure=0&amp;
+</code>
+
+The user follows the link to Google's site and authenticates to their Google Account.
+
+After the user authenticates, the `AuthSub` system redirects them to the URL you specified in the *next* query parameter of the `AuthSubRequest` URL. The `AuthSub` system appends an authentication token to that URL, as the value of the *token* query parameter. For example:
+
+<code>https://www.example.com/welcome.html?token=yourAuthToken</code>
+
+This token value represents a single-use `AuthSub` token. In this example, because <b>session=1</b> was specified, this token can be exchanged for an `AuthSub` session token by calling the <a href="/apis/accounts/AuthForWebApps.html#AuthSubSessionToken"><b>`AuthSubSessionToken`</b></a> service with the single-use token in an Authorization header, as follows:
+
+{{{
+GET /accounts/AuthSubSessionToken HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Authorization: AuthSub token="yourAuthToken"
+User-Agent: Java/1.5.0_06
+Host: www.google.com
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+Connection: keep-alive
+}}}
+
+The `AuthSubSessionToken` service response includes a <b>Token</b> header that contains the session token and an <b>Expiration</b> header that indicates how long the token will remain valid.
+
+Your application can then use the session token value in the <b>Authorization</b> header of subsequent interactions with your issue tracker.
+
+Here's an example of an HTTP request, containing a non-secure token, that you might send to the Issue Tracker:
+
+{{{
+GET /feeds/issues/p/PROJECT_NAME/issues/full HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Authorization: AuthSub token="yourSessionToken"
+User-Agent: Java/1.5.0_06
+Host: code.google.com
+Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
+Connection: keep-alive
+}}}
+
+== Authenticating `ClientLogin` username/password ==
+
+Use `ClientLogin` authentication if your client is a standalone, single-user "installed" client (such as a desktop application). To request an authentication token using the `ClientLogin` mechanism, send a <b>POST</b> request to the following URL: <code>https://www.google.com/accounts/ClientLogin</code>
+
+The <b>POST</b> body should contain a set of query parameters that look like parameters passed by an HTML form, using the <b>application/x-www-form-urlencoded</b> content type. These parameters are:
+
+||accountType||Type of account to be authenticated. You must set this to <b>GOOGLE</b>.||
+||Email||The user's email address.||
+||Passwd||The user's password.||
+||service||Project Hosting on Google Code's service name is <b>code</b>. (For other service names, see the <a href="http://code.google.com/support/bin/answer.py?answer=62712&amp;topic=10433">service name list</a>.)||
+||source||Identifies your client application. Should take the form <b>companyName</b>-<b>applicationName</b>-<b>versionID</b>.||
+
+For more information about the parameters, see the <a href="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request">Authentication for Installed Applications</a> document.
+
+If the authentication request fails, then the server returns an HTTP <b>403 Forbidden</b> status code.
+
+If it succeeds, then the server returns an HTTP <b>200 OK</b> status code, plus three long alphanumeric codes in the body of the response: SID, LSID, and Auth. The Auth value is the authorization token that you'll send to Project Hosting on Google Code with each of your subsequent issues, issue comments-feed requests, so keep a copy of that value. You can ignore the SID and LSID values.
+
+Because all requests to private feeds require authentication, you need to set the Authorization header in all subsequent interactions with Project Hosting on Google Code, using the following format:
+
+<pre>Authorization: {{{GoogleLogin}}} auth=<b>yourAuthToken</b></pre>
+
+Where <b>yourAuthToken</b> is the Auth string returned by the `ClientLogin` request.
+
+For more information about `ClientLogin` authentication, including sample requests and responses, see <a href="http://code.google.com/apis/accounts/AuthForInstalledApps.html">Authentication for Installed Applications</a>.
+
+<i><b>Note: Use the same token for all requests in a given session; don't acquire a new token for each Project Hosting on Google Code request.</b></i>
+
+= Retrieving a list of issues =
+
+== Retrieving all issues ==
+
+The Issue Tracker Data API provides a feed that lists the issues for a particular project.
+
+To access this feed and retrieve a list of issues send an HTTP <b>GET</b> to the following URL (be sure to replace PROJECT_NAME with the name of the project that you would like to get issues for):
+<code>https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/full</code>
+
+An entry in the issues might look like this:
+
+{{{
+<entry>
+  <id>https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/full/3</id>
+  <published>2009-09-08T21:04:31.232Z</published>
+  <updated>2009-09-09T20:34:35.365Z</updated>
+  <title>This is updated issue summary</title>
+  <content type='html'>This is issue description</content>
+  <link rel='self' type='application/atom+xml' href='https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/full/3'/>
+  <author>
+    <name>elizabeth.bennet</name>
+    <uri>/u/elizabeth.bennet/</uri>
+  </author>
+  <issues:cc>
+    <issues:uri>/u/@UBhTQl1UARRAVga7/</issues:uri>
+    <issues:username>mar...@example.com</issues:username>
+  </issues:cc>
+  <issues:cc>
+    <issues:uri>/u/fitzwilliam.darcy/</issues:uri>
+    <issues:username>fitzwilliam.darcy</issues:username>
+  </issues:cc>
+  <issues:label>Type-Enhancement</issues:label>
+  <issues:label>Priority-Low</issues:label>
+  <issues:owner>
+    <issues:uri>/u/charlotte.lucas/</issues:uri>
+    <issues:username>charlotte.lucas</issues:username>
+  </issues:owner>
+  <issues:stars>0</issues:stars>
+  <issues:state>open</issues:state>
+  <issues:status>Started</issues:status>
+</entry>
+}}}
+
+For information about what each of those elements means, see the [IssueTrackerAPIReference Issue Tracker Data API reference guide], [http://code.google.com/apis/gdata/reference.html#Document-format Google Data APIs Protocol Reference] document, or the <a href="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom 1.0 specification</a>.
+
+If your request fails for some reason, Issue Tracker Data API may return a different status code. More information about HTTP status codes is also available in the <a href="http://code.google.com/apis/gdata/reference.html">Google Data APIs Protocol Reference</a> document.
+
+== Retrieving issues using query parameters ==
+
+The Issue Tracker Data API lets you request a set of issues that match specified criteria, such as requesting issues created or updated in a given date range.
+
+For example to send a date-range query:
+  # First, add the <b>updated-min</b> and <b>updated-max</b> parameters to the request URL. To get all the issue entries updated from March 16, 2008 to March 24, 2008, send an HTTP request to the issue's feed URL: <b>`GET https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/full?updated-min=2008-03-16T00:00:00&amp;updated-max=2009-03-24T23:59:59`</b>
+  # After you send the <b>GET</b> request, Issue Tracker Data API may return a redirect, depending on various factors. If so, send another <b>GET</b> request to the redirect URL.
+  # When you send that <b>GET</b> request, Issue Tracker Data API returns an HTTP <b>200 OK</b> status code and a feed containing any *items* that were created or updated in the date range you specified.
+
+The Issue Tracker Data API supports the following query parameters:
+
+||alt||The type of feed to return, such as <b>atom</b> (the default) or <b>rss</b>.||
+||author||Return issues based on who reported the issue. For Gmail users, this will be the part of the email preceding the '@' sign.||
+||can||Return issues based on a canned query identifier such as <ul><li>'All issues' <b>all</b></li><li>'Open issues' <b>open</b></li><li>'Open and owned by me' <b>owned</b></li><li>'Open and reported by me' <b>reported</b></li><li>'Open and starred by me'<b>starred</b></li><li>'New issues' <b>new</b></li><li>'Issues to verify' <b>to-verify</b></li></ul>||
+||id||The issue to return based on the issue id.||
+||label||The type of issues to return based on the label set on the issue.||
+||max-results||The maximum number of entries to return. If you want to receive all of the *items*, rather than only the default maximum, you can specify a very large number for <b>max-results</b>.||
+||owner||Return issues based on the owner of the issue. For Gmail users, this will be the part of the email preceding the '@' sign.||
+||published-min, published-max||The bounds on entry publication dates.||
+||q||Return issues based on a full text search.||
+||status||Return issues based on the status of the issue.||
+||start-index||The 1-based index of the first result to be retrieved (for paging).||
+||status||Return issues based on the status of the issue.||
+||updated-min, updated-max||The bounds on entry update dates.||
+
+For more information about query parameters, see the [IssueTrackerAPIReference Issue Tracker Data API Reference Guide] and the <a href="http://code.google.com/apis/gdata/reference.html#Queries">Google Data APIs Reference Guide</a>.
+
+= Retrieving issues comments for an issue=
+
+For an issue, the Issue Tracker Data API provides a feed that lists the comments for that particular issue.
+
+To access this feed and retrieve the list of issue comments send an HTTP <b>GET</b> to the following URL (be sure to replace PROJECT_NAME with the name of the project and replace ISSUE_ID with the issue id for the issue that you want to get issue comments for):
+<code>https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/3/comments/full</code>
+
+An entry in the issue comments might look like this:
+
+{{{
+<entry>
+  <id>https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/13/comments/full/1</id>
+  <published>2009-09-09T20:30:17.836Z</published>
+  <updated>2009-09-09T20:30:17.836Z</updated>
+  <title>Comment 1 by elizabeth.bennet</title>
+  <content type='html'>ISSUE CONTENT</content>
+  <link rel='self' type='application/atom+xml' href='https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/3/comments/full/1'/>
+  <author>
+    <name>elizabeth.bennet</name>
+    <uri>/u/elizabeth.bennet/</uri>
+  </author>
+  <issues:updates>
+    <issues:ccUpdate>-fitzwilliam.darcy</issues:ccUpdate>
+    <issues:ccUpdate>mar...@example.com</issues:ccUpdate>
+    <issues:label>-Type-Defect</issues:label>
+    <issues:label>-Milestone-2009</issues:label>
+    <issues:label>-Priority-Medium</issues:label>
+    <issues:label>Type-Enhancement</issues:label>
+    <issues:label>Priority-Low</issues:label>
+    <issues:ownerUpdate>charlotte.lucas</issues:ownerUpdate>
+    <issues:status>Started</issues:status>
+    <issues:summary>This is updated issue summary</issues:summary>
+  </issues:updates>
+</entry>
+}}}
+
+For information about what each of those elements means, see the <a href="">Issue Tracker Data API reference guide</a>, <a href="http://code.google.com/apis/gdata/reference.html#Document-format">Google Data APIs Protocol Reference</a> document, or the <a href="http://www.atomenabled.org/developers/syndication/atom-format-spec.php">Atom 1.0 specification</a>.
+
+If your request fails for some reason, the Issue Tracker Data API may return a different status code. More information about HTTP status codes is also available in the <a href="http://code.google.com/apis/gdata/reference.html">Google Data APIs Protocol Reference</a> document.
+
+= Creating issues =
+
+After authenticating, you can publish new Issue Tracker entries.
+
+First, create an XML representation of the issue to publish. This XML needs to be in the form of an Atom <b>`<entry>`</b> element, which might look like this:
+{{{
+<?xml version='1.0' encoding='UTF-8'?>
+<entry xmlns='http://www.w3.org/2005/Atom' xmlns:issues='http://schemas.google.com/projecthosting/issues/2009'>
+  <title>This is issue summary - create issue</title>
+  <content type='html'>This is issue description</content>
+  <author>
+    <name>elizabeth.bennet</name>
+  </author>
+  <issues:status>Accepted</issues:status>
+  <issues:owner>
+    <issues:username>elizabeth.bennet</issues:username>
+  </issues:owner>
+  <issues:label>Type-Defect</issues:label>
+  <issues:label>Milestone-2009</issues:label>
+  <issues:label>Priority-Medium</issues:label>
+  <issues:cc>
+    <issues:username>fitzwilliam.darcy</issues:username>
+  </issues:cc>
+  <issues:cc>
+    <issues:username>georgiana.darcy@example.com</issues:username>
+  </issues:cc>
+</entry>
+}}}
+
+To publish this entry, send it to the Issue Tracker's post URL as follows: 
+
+  # First, place your Atom <b>`<entry>`</b> element in the body of a new <b>POST</b> request, using the <b>application/atom+xml</b> content type. 
+  # Then find the Issue Tracker's post URL in the Issues feed by locating the <b>`<link>`</b> element where the <b>rel</b> attribute ends with <b>#post</b>. The Issue Tracker's post URL is given as the <b>href</b> attribute of this element, which is in this format: <b>`https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/full`</b>
+  # Project Hosting on Google Code creates an issue using the entry you sent, then returns an HTTP <b>201 CREATED</b> status code, along with a copy of the new issue in the form of an <b>`<entry>`</b> element. The entry returned is the same one you sent, but it also contains various elements added by the Issue Tracker Data API, such as an <b>`<id>`</b> element. This operation WILL FAIL unless you change owner/cc fields to those added as owner/members for the specified project. Required elements: title, content, author.
+  # If your request fails for some reason, the Issue Tracker Data API may return a different status code. For information about the status codes, see the <a href="http://code.google.com/apis/gdata/reference.html">Google Data API protocol reference document</a>.
+
+= Modifying an issue or creating issue comments =
+
+After authenticating, you can modify an issue by creating new issue comments.
+
+First, create an XML representation of the issue comment to publish. This XML needs to be in the form of an Atom <b>`<entry>`</b> element, which might look like this:
+{{{
+<?xml version='1.0' encoding='UTF-8'?>
+<entry xmlns='http://www.w3.org/2005/Atom' xmlns:issues='http://schemas.google.com/projecthosting/issues/2009'>
+  <content type='html'>This is comment - update issue</content>
+  <author>
+    <name>elizabeth.bennet</name>
+  </author>
+  <issues:updates>
+    <issues:summary>This is updated issue summary</issues:summary>
+    <issues:status>Started</issues:status>
+    <issues:ownerUpdate>charlotte.lucas</issues:ownerUpdate>
+    <issues:label>-Type-Defect</issues:label>
+    <issues:label>Type-Enhancement</issues:label>
+    <issues:label>-Milestone-2009</issues:label>
+    <issues:label>-Priority-Medium</issues:label>
+    <issues:label>Priority-Low</issues:label>
+    <issues:ccUpdate>-fitzwilliam.darcy</issues:ccUpdate>
+    <issues:ccUpdate>marialucas@example.com</issues:ccUpdate>
+  </issues:updates>
+</entry>
+}}}
+
+To publish this entry, send it to the Issue Tracker's post URL as follows: 
+  # First, place your Atom <b>`<entry>`</b> element in the body of a new <b>POST</b> request, using the <b>application/atom+xml</b> content type. 
+  # Then find the Issue Tracker's post URL in the metafeed by locating the <b>`<link>`</b> element where the <b>rel</b> attribute ends with <b>#post</b>. The issue's post URL is given as the <b>href</b> attribute of this element, which is in this format <b>`https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/ISSUE_ID/comments/full`</b>
+  # Project Hosting on Google Code creates a issue using the entry you sent, then returns an HTTP <b>201 CREATED</b> status code, along with a copy of the new issue in the form of an <b>`<entry>`</b> element. The entry returned is the same one you sent, but it also contains various elements added by the Issue Tracker Data API, such as an <b>`<id>`</b> element. Required elements: author.
+  # If your request fails for some reason, the Issue Tracker Data API may return a different status code. For information about the status codes, see the <a href="http://code.google.com/apis/gdata/reference.html">Google Data API protocol reference document</a>.
+
+= Deleting issues/issue comments =
+
+Deleting an issue should be rarely done and is only supported through the UI. Instead close the issue instead by setting the appropriate issue status by adding an issue comment as described [#Modifying_an_issue_or_creating_issue_comments above].

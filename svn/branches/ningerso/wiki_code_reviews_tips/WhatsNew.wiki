@@ -1,0 +1,232 @@
+#summary Announcements of the latest project hosting features
+
+Welcome to the What's New page for project hosting on Google Code. Here you'll find descriptions of our latest improvements to our collaborative development environment.
+
+= November 2008 =
+
+== Autolinking of URLs in issue and revision text ==
+
+Now if you mention a URL in the text of an issue comment or a subversion commit log message, that URL is automatically shown as a hyperlink.
+
+== More Compact Issue Notification Emails ==
+
+The format of our issue notification emails has changed to now put the
+metadata at the top.  The summary still includes the issue number,
+project name, and issue summary.  Moving the metadata up improves the
+snippets shown in Gmail and other mail clients.
+
+== Artifact Sorting by Username ==
+
+A long-standing problem with sorting issues, downloads, and wiki pages
+has been fixed.  Previously these items did not sort properly by
+usernames, such as the issue "owner" or file "uploadedby" columns.
+Also, new issue list columns are available for the issue reporter and
+Cc list.  To see all the built-in columns, click the "..." table
+header in any list view.
+
+== Issue Blocking and Merging ==
+
+In a small project, only a few people are involved, and they become
+pretty familiar with the issues in their issue tracker.  But, now that
+we are hosting more large projects, we are adding the option to
+formalize more of what small teams know implicitly.
+
+Users always had the ability to document in plan language that one
+issue could not be worked on until another issue was completed, and
+the issue reference in that text becomes a hyperlink to the other
+issue.  Now, issues can be explicitly marked as blocked on other
+issues.  Changing issue A to make it blocked on issue B adds
+hyperlinks in both directions between the two issues, and adds a
+comment to issue B at the same time that issue A is updated.
+
+Users could always close an issue as a duplicate and mention the
+original issue in the comment.  Now, if the status field if set to
+Duplicate, users also have the option to merge the duplicate issue
+with the original issue.  Merging adds all unique stars and Cc values
+to the original issue, and automatically adds a comment to the
+original issue.
+
+== Starred Projects ==
+
+Users can now star projects that you are interested in so that you can
+easily revisit them.  On the summary page of any project, just click
+the star icon in the right-hand column.  The list of projects that you
+have starred is shown on your profile page.
+
+
+
+= October 2008 =
+
+== Onward or Upward? ==
+
+Our issue tracker UI was designed with tabbed browsing in mind.  For example, if you want to triage several issues, you can middle-mouse click on links in the issue list to open several issues in separate browser tabs, then step through each of them rapidly.
+
+Now there is another way to rapidly step through issues in your project using just one browser tab.  When you submit an issue, you can now specify whether you would like to go up to the issue list, stay on the same issue, or go to the next issue in the list.
+
+
+== Assigned Code Reviews ==
+
+We love to see developers doing code reviews because it is one of the best ways to improve quality and help everyone on your team stay in-touch with changes as they are made.  Since July we've offered a very easy-to-use code review tool that allows anyone to comment on any line of any revision.  
+
+Now, we are adding assigned reviews: these are issues labeled Type-Review that request that a project member review code that has been committed to a branch. These issues can be created through the Web !UI or through special syntax in a commit log message. The issues are listed in the issue tracker, as well as at the top of the recent changes page.  Each issue links to a branch review page that summarizes all the changes made on that branch.  Once a review is done, its issue can be closed.  See the CodeReviews page for more information.
+
+== Gadgets In, Gadgets Out ==
+
+You can now place any gadget in a wiki page in your project. That makes it possible to show video, charts, and stats.  And, you can now put gadgets with info about your project onto your iGoogle page (or any other gadget container). See our [http://google-code-updates.blogspot.com/2008/10/gadgets-and-google-code.html blog post] for more details.
+
+== Project Updates ==
+
+The new "Updates" subtab shows a summary of recent project activity, including commits and issue changes. It's a great way to understand how active a project is, and who did what.  See our [http://google-code-updates.blogspot.com/2008/10/project-updates-on-google-code.html blog post] for more information.
+
+= July 2008 =
+
+== Source Code Review Tools ==
+
+Code reviews can be a very effective way to improve your code quality, and keep your project members involved in the changes that might affect their work. We now offer a source code review tool that is integrated with Google Code's project hosting.
+
+Reviewing code in your project is simple: browse any source file or diff, double click on a source line to add comments, then publish your comments along with a general comment and score for the revision.
+
+You can see [http://code.google.com/p/support/source/detail?r=70 code reviews in action] on the code.google.com support project. For complete documentation, see the CodeReviews wiki page.
+
+== Project feeds ==
+
+We now have Atom feed available for you to track issues, downloads, Subversion changes, and Wiki updates.  For a list of all feeds in a given project, click the `Project Feeds` link in the right-hand column of the project home page.
+
+= June 2008 =
+
+== Browse history of files even if they were moved or copied ==
+
+Version control is all about access, changes, and history.  When a source code file is moved or copied from one location to another, subversion tracks the old pathname and the new one. The normal `svn log` command shows you the entire past history of a file, even if it has been moved or copied over time.
+
+Now we present that same information in the web interface for source code browsing.  The revision navigation links now offer links to previous versions of the file, even if those previous versions were at a different previous location.  And, when viewing the list of all changes to a given file, the list is divided into sections for each pathname that the file has had over time.  For example, the Hello.java in GWT 1.5 came [http://code.google.com/p/google-web-toolkit/source/list?path=/releases/1.5/samples/hello/src/com/google/gwt/sample/hello/client/Hello.java&start=2940 straight from trunk], whereas some other files have been [http://code.google.com/p/google-web-toolkit/source/list?path=/trunk/dev/core/src/com/google/gwt/core/ext/LinkerContext.java&start=2242 moved a few times].
+
+
+= May 2008 =
+
+== Atom feeds for issue changes and commits ==
+
+Developers need to stay aware of changes happening in their projects and projects that they depend on.  Usually that means a very full email inbox and lots of automated message filtering.  But, there is a better way.
+
+We now offer atom feeds for the most recent svn commits and issue changes in a project.  When you visit the source code change list page or the issue list page, click the feed icon in your browser location bar to subscribe to the feed.  For example, here is a [http://code.google.com/feeds/p/gears/issueupdates/basic feed of issue changes in the Gears project].
+
+== Downloadable issue list .csv file ==
+
+Do you need to do something with your issue data that our issue tracker just can't do? For example, you might like to produce a bar chart of issues assigned to each developer. Now we help you do that by allowing you to download a comma-separated-value file that has the same information you see in the issue list.  Just click the "CSV" link at the bottom of the issue list.  With most operating systems and browsers, that will take you straight to a spreadsheet application.
+
+== Source browsing file diff now includes SVN Property diffs ==
+
+The title says it all.  If you changed file properties in an svn commit, you will now see the old and new values of those properties on the diff page. 
+
+== Issue bulk editing ==
+
+It's time for spring cleaning of the issues in your project: organize them by milestone, organize them by component, or assign them all to your project members.  Doing that just got a lot easier because we now offer issue bulk editing.
+
+In the issue list, logged-in project members can check the checkboxes for several issues on one page and then use the "Actions..." drop-down menu at the top of the list to select "Bulk edit...". The bulk edit page allows you to enter one comment that will be appended to all the selected issues. You can set the status or owner of all the issues by filling in those fields. And, you can add or remove labels by entering the label name, or the label name proceeded by a minus-sign.
+
+== Autolinking in svn commit log messages ==
+
+Now when you mention issues or other revisions in your subversion commit log messages, the text will automatically be linked to the detail page for those artifacts.  Just as with autolinked references in issues and wiki pages, the syntax is `issue 123` or `issue #123` for issues, and `r123` for revisions.  If the linked issue has been closed, it will appear crossed-out.  In most browsers, hovering your mouse over the issue link displays the one-line summary of the issue.
+
+
+= March 2008 =
+
+== Source code browsing improvements ==
+
+We've been working on improving the source code browsing tool.  Intra-line diffs now make it much easier to notice exactly which characters changed on each line. We've also improved the speed of the tool and made it more robust for projects that have large source trees.
+
+= Jan 2008 =
+
+== Source code browsing tool ==
+
+The great thing about open source is that anyone can see the source code. Well, that just got a lot easier on Google Code.  
+
+Unlike many of the existing source code browsing tools, ours allows you to quickly drill down into multiple levels of directories. And, we built in the assumption that you want to get straight to the source, even though file metadata is still easily accessible on the same page. Syntax highlight makes your source code easier to read, and our syntax highlighting works without bloating the HTML markup.
+
+Source code is not just about code, it is also about how and why the code has changed over time.  So, the "Changes" subtab gives you a concise list of all revisions to your source code repository, and each revision can display the log message and show diffs. We also made it easy to flip through revisions or diffs of a given file.
+
+To browse the source code of any project, just click the "Source" tab, and then the "Browse" subtab. If you have already memorized the instructions for how to check out source code, you might want to change your personal [http://code.google.com/hosting/settings settings] so that the "Browse" subtab is shown by default. Enjoy!
+
+
+= Dec 2007 =
+
+== Replace a project tab with a wiki page ==
+
+To keep our project hosting service simple and easy to use, we only offer one version control system, one wiki, one download system, and one issue tracker.  These tools are designed to be flexible to fit the needs and best practices of most small- to medium-sized open source projects. However, we know that one size does not fit all: some projects have existing tools hosted elsewhere, or simply prefer to use other google products or tools hosted on another site.
+
+Now project owners can write a simple wiki page giving end-users instructions on how to get to your external tool, and then replace the corresponding project tab with that wiki page.  That wiki page can link to the other site, or you can customize the landing pages for our hosted tools by linking to specific pages within your own project.  And, undesired project tabs can be hidden from users, for example a documentation project you might not need the Downloads tab.
+
+
+= Sept 2007 =
+
+== Use any Google Account, not just Gmail accounts ==
+
+Previously, we required that all project owners and members use [http://www.gmail.com/ Gmail] accounts.  That restriction helped us manage certain types of spam, but it inconvenienced many legitimate users as well. We've made improvements to the way that we manage the site, and can now pass on the convenience to users.  
+
+Project owners and members can now be specified with the full email address of any Google Account. 
+
+= July 2007 =
+
+== Easier way to get to project home pages ==
+
+Shorter, simpler URLs look better and are easier to remember. When developers put their heart into a project they want it to make the best first impression, which is often in the form of a URL in an email or on another web page.
+
+We've always valued clean URLs for project home pages, and have used `http://code.google.com/p/PROJECTNAME` since we started offering project hosting.  Now, projects can also be reached via an even cleaner URL: `http://PROJECTNAME.googlecode.com`.
+
+== Grid view of issues ==
+
+When projects start, they have a few defect reports and requests for enhancements.  A simple list of issues is good enough: a developer picks some issue, solves it, and closes it.  But, as projects grow in scope, the number of open issues can grow and it can be hard to know which issues to work on first.  Sorting and filtering the list can help developers understand the set of open issues, but now there is an easier way.
+
+The grid view of issues uses rows and columns to lay out issues according to any two attributes.  For example, [http://code.google.com/p/support/issues/list?can=2&q=milestone&sort=&mode=grid&y=Milestone&x=Priority&cells=tiles&nobtn=Update support issues by milestone and priority]. The grid view can also easily show the number of open issues associated with each component, or the number of issues owned by each project member.
+
+== Improvements to list views ==
+
+Project artifacts in your project workspace have a variety of built-in attributes, and can be labeled with Key-Value pairs as user-defined attributes.  These attributes can be used as column headings in any list view as a way to bring out and organize information according to the structure that makes the most sense for that project.
+
+Several improvements were made to the list views to help project owners use the power of user-defined attributes more fully:
+
+   * Project owners can now define default columns and sorting in the issue tracker, wiki page list, and downloads list.
+   * End-user list configuration is now kept when the user edits an issue
+   * The number of items displayed per page has been increased to 100
+   * We now display the entire summary of artifacts, even it it would be so long that it word-wraps
+
+== Clarification of the purpose of stars ==
+
+When a user clicks the star icon on an issue, he or she is indicating an interest in that issue.  We make it easy for users to search the issues that they have starred.  Also, users will receive email notification of changes to issues that they have starred.  And, everyone who visits the project can see the number of users who have starred each issue.
+
+We have clarified the email notification aspect of stars by adding tool-tips to the stars and a reminder that starring causes notification of changes to the issue detail page.
+
+== Issue tracker comments ==
+
+Sometimes a user leaves a comment on an issue that is irrelevant or which contains information like a password that should not be displayed to other users.  It can happen to any of us if we accidentally comment on the wrong issue or paste in a big chunk of text.  
+
+Now, those unwanted comments can be deleted or undeleted by the user who entered them or any project member.
+
+== Wiki page comments ==
+
+Wiki's are community-owned knowledge-bases: they should allow contributions from anyone who notices a problem or wants to add valuable information, but they can also lose some of their value if they are vandalized, if they become disorganized, or if incorrect information is added.
+
+The project wiki feature that we offer now strikes a balance between these trade-offs by allowing any logged in use to append a comment to the wiki pages.  Project members may then review the comments and choose to:
+  * Leave them as useful comments
+  * Incorporate them into the page, and delete the comment since it would be redundant
+  * Delete any valueless comments
+
+== Google Analytics integration ==
+
+Open source projects are all about collaboration between project members and the users of the software being developed.  To provide the most useful software to your users, you might want to know simply how many potential users have visited your project workspace, which countries they come from, which browsers they use, and which of your wiki pages they have viewed.
+
+Now all those questions can be answered.  Project owners may simply sign up for [http://www.google.com/analytics Google Analytics] and enter an analytics profile number into the project admin page.  Tracking data can be viewed on the Google Analytics site about 24 hours later.
+
+== Bug fixes ==
+
+We continue to work hard to improve the quality and reliability of the project hosting service by finding and fixing defects.  Please check our current [http://code.google.com/p/support/issues/list support issues], star the issues that are most important to you, and report and new defects that you find.
+
+= April 2007 =
+
+== Autolinking of issues ==
+
+Software development is all about putting ideas into working software.  It turns out that the software created has a lot of interconnections, and the process of creating that software requires even more connections, dependencies, and references between all the information produced as part of the project.  Google code hosting has always offered the developers the ability to link web pages in subversion, and wiki pages.  We also encourage the use of Google groups or other mailing list archives that make past messages accessible via a link.  And, every issue has had a clear URL that can be linked to, but only by specifying the full link.
+
+Now, you can easily and automatically link to any issue from another issue comment or from a wiki page.  Just write "issue N" or "issue #N" and it will be linked to the corresponding issue in your project.  If that issue is closed, the link text will be crossed out.  Moving your mouse over the link shows the summary of the issue.
+
+_The content on this page created by Google is licensed under the [http://creativecommons.org/licenses/by/3.0/ Creative Commons Attribution 3.0 License].  User-generated content is not included in this license._
+ 

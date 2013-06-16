@@ -1,0 +1,62 @@
+#summary How to manage project memberships using user groups.
+
+= User Groups =
+
+Google Project Hosting offers project owners the ability to grant project membership to an entire group of users by adding the user group to the project.  User groups make it easier to manage large projects that have many members, and to manage related projects that share a common group of users. User groups can also make it easier to Cc multiple users on an issue, or to assign group issue ownership rather than individual user issue ownership.
+
+<wiki:toc max_depth="2" />
+
+== How do I add a user group to my project? ==
+
+
+Two types of user groups may be used: (1) groups created on groups.google.com, and (2) groups created by a Google Apps For Your Domain (GAFYD) administrator.
+
+To create a user group on groups.google.com, simply sign in and visit http://groups.google.com, create a new group with “Restricted” access, and then invite or directly add the members that you will want in your project.  Next, visit the *Administer* tab *Project Members* admin subtab in your project and add GROUPNAME@googlegroups.com as a member.
+
+To create a GAFYD user group, have your domain administrator use the domain control panel to create the user group with any access level and then add members.  Next, visit the *Project Members* subtab in your project and add the group email address as a member. Note that domains must be converted to Google’s new account infrastructure before a user group from that domain can be used with Google Project Hosting.  If you are not sure if your domain has been converted yet, ask your domain administrator check for a conversion wizard on the domain control panel.
+
+== What permissions do user group members have? ==
+
+
+User groups can be added as project owners, committers, or contributors.  Group members will be given permissions according to the group’s role.
+
+On the project *People* detail pages, you can grant additional permissions to users.  The same is true for user groups, and each group member will get the additional permissions.
+
+It is possible for one user to be in multiple user groups and for those user groups to play different roles in the project or have different additional permissions granted to them.  Such users get the union of all permissions given to them through each user group and also through any direct role that he or she has in the project.
+
+== Do you support nested user groups? ==
+
+
+Yes we do, but only GAFYD groups can be nested. Groups created on groups.google.com cannot be nested.  
+
+When using user groups created in a GAFYD domain, if user U is a member of user group G1, and group G1 is a member of group G2.  Then granting G2 a role in your project gives user U membership in the project.
+
+== Who controls user groups? ==
+
+
+User groups have their own group owners/managers and member visibility settings.  It is strongly recommended that you make the user group owners the same as your project owners, or a subset.  If the group has other group managers, they could add new user group members without any knowledge or action on your part, and then those members would have a role in your project.
+
+== Can user groups become issue owners or be Cc’d? ==
+
+
+Yes.  You can set an issue owner to be the email address of a user group, or add a user group to the Cc line.  Members of the user group will receive notifications of issue changes.
+
+Permission rules also apply to user groups on an issue owner or Cc line.  If the issue has a restriction label and the issue owner is set to a user group, members of that issue group will still be able to edit that issue.  Likewise, when a user group is Cc’d, group members will be able to view the issue, regardless of restriction labels.
+
+== When I try to set the issue owner or Cc, I don’t see a user who has membership via a user group. What’s wrong? ==
+
+
+Google Project Hosting respects the user group settings for visibility of the group member list.  Typically you must yourself be a member of the user group before you can see other members.  Some user groups are configured to be more restrictive in that they only allow group managers to see the member list.  So, check that you are a member of the group, and that the group is configured to allow any member to see the membership list.
+
+If you would like all project members to be able to see the members of a user group regardless of whether they are members of the group or not, you can add your project’s email from-address as a member of the group.  You can find your project’s from-address on any of the Administer sub-tabs that configure mailing lists, it looks like PROJECT-NAME@googlecode.com.
+
+== I added a user to my user group, but they are not still able to make changes in the project. What’s wrong? ==
+
+
+Make sure that the email address that you added to the user group corresponds to a Google Account.  Although GAFYD accounts in domains that have not converted to the new account infrastructure can be used in Google Groups, they cannot be used to sign in to Google Code.
+
+Also, when adding members to a Google Group, be careful about whether you are adding the members directly, or merely inviting them to join the group.  Inviting members is the default.  When you invite a new member, he or she must check their inbox and confirm the invitation before actually becoming a member of the group.
+
+== I gave a huge user group a role in my project, but only some members are getting notifications. What’s wrong? ==
+
+We currently process up to 2000 user group members.  If you need more members than that in your project, you are probably not using our software development tools for their intended purpose.  You can Cc a mailing list of any size, so long as that mailing list does not have a role in the project.

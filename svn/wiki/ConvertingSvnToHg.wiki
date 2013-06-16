@@ -1,0 +1,116 @@
+#summary Moving a project from using Subversion for code hosting to Mercurial
+#labels Mercurial
+
+= Convert your project from Subversion to Mercurial =
+
+Follow the following instructions to switch your project from Subversion to Mercurial: 
+
+  # Go to your existing open source project, choose the Administer tab, and then choose the Source sub-tab.
+  # Change the repository type to Mercurial
+  # Import your code into the Hg code repository as described in the 'How to Convert Subversion History to Mercurial' section below
+  # In the same manner you imported your code, import your wiki into the Hg wiki repository. Make sure to use the path of the wiki in your subversion repository (e.g. http://projectname.googlecode.com/svn/wiki) and the Hg wiki repository (https://code.google.com/p/projectname.wiki)
+
+Your old Subversion project will still be accessible after you switch your project to using Mercurial, so you will not need to back up your repository before switching. Your Subversion repository will remain accessible at: https://projectname.googlecode.com/svn/
+
+= How to Convert Subversion History to Mercurial =
+
+== Option 1:  Top-Skimming ==
+
+If you don't care about your project's history, then you can simply
+"top skim" the latest trunk code or wiki from Subversion and put it into
+Mercurial.  Assuming your googlecode Mercurial repository is empty,
+it's as easy as:
+
+{{{
+  $ hg clone https://code.google.com/p/projectname hg-client
+  $ cd hg-client
+  $ svn export --force http://projectname.googlecode.com/svn/trunk .
+  $ hg add .
+  $ hg commit -m "Initial import of source."
+  $ hg push
+}}}
+
+To convert your wiki:
+{{{
+  $ hg clone https://code.google.com/p/projectname.wiki hg-client-wiki
+  $ cd hg-client-wiki
+  $ svn export --force http://projectname.googlecode.com/svn/wiki .
+  $ hg add .
+  $ hg commit -m "Initial import of wiki."
+  $ hg push
+}}}
+
+== Option 2:  Full History Conversion ==
+
+If want to migrate your whole history, the process is much more
+involved.  You'll need these special tools installed first.
+
+=== Install tools ===
+
+  * The 'hg convert' extension module.
+
+      This already ships with recent Mercurial distributions; just
+      make sure you're running hg version 1.1 or 1.2.  ("hg
+      --version").
+
+      Enable the extension by adding to your .hgrc:
+
+{{{
+         [extensions]
+         hgext.convert=
+}}}
+
+  * The Subversion swig-python bindings
+
+      Make sure you have a recent Subversion installed (1.5 or 1.6).
+      Many distributions of Subversion ship with the python bindings,
+      or offer "extra" binary packages of them.
+
+      You can check that your svn-python bindings are installed
+      correctly by running:
+
+{{{
+        $ python -c "import svn.core; print svn.core.SVN_VER_MINOR"
+        5
+}}}
+
+      If this fails, or if you get a minor version less than 5, then
+      something is wrong.
+
+      If you have no binary package available and are desperate, you
+      can build them from Subversion's own source tree:
+
+{{{
+        $ svn checkout http://svn.collab.net/repos/svn/tags/1.6.0 svn
+        $ cd svn
+        $ ./autogen.sh && ./configure
+        $ make
+        $ sudo make install
+        $ make swig-py  # make sure you have swig 1.3 installed already
+        $ make check-swig-py
+        $ sudo make install-swig-py
+}}}
+
+      If you're on the Hardy version of Ubuntu, you can find version 1.5 of `python-subversion` in `hardy-backports`:
+
+      http://packages.ubuntu.com/hardy-backports/python-subversion
+
+      This may also require installing backports of the `libsvn1`, `subversion`, `mercurial-common`, and `mercurial` packages.
+
+=== Doing the Conversion ===
+
+Now we do the conversion -- branches, tags and all:
+
+{{{
+  $ mkdir hg-client
+  $ hg convert http://projectname.googlecode.com/svn hg-client
+}}}
+
+Once the conversion is done, you can push the new history up to your
+Google Code project (which presumably has an empty Mercurial
+repository):
+
+{{{
+  $ cd hg-client
+  $ hg push https://code.google.com/p/projectname
+}}}

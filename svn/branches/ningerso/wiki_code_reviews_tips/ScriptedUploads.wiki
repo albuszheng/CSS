@@ -1,0 +1,15 @@
+#summary How to do scripted uploads to your Google Code project
+
+Do I have to use my web browser to upload files? Nope, using a browser not the only way. 
+
+We want to make it as easy as possible to upload files to your project, so there are several ways to script uploads:
+
+== Python Script ==
+
+We've dropped a handy script called [http://support.googlecode.com/svn/trunk/scripts/googlecode_upload.py googlecode_upload.py] into the Subversion repository for the Google Code [http://code.google.com/p/support Support Project]. Run `googlecode-upload.py --help` for the details in how to use the script. 
+
+== Ant Task ==
+
+Google Code user Jonathan Fuerth has graciously written an ant task to script uploads to your project at Google Code.  You can get it from (where else?) the [http://code.google.com/p/ant-googlecode/ ant-googlecode] project on Google Code.  The ant task is available from here: http://ant-googlecode.googlecode.com/svn/trunk/
+
+_The content on this page created by Google is licensed under the [http://creativecommons.org/licenses/by/3.0/ Creative Commons Attribution 3.0 License].  User-generated content is not included in this license._

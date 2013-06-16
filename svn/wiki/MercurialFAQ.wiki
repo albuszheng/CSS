@@ -1,0 +1,48 @@
+#summary Frequently asked questions about Mercurial.
+#labels Mercurial
+
+=Mercurial FAQ=
+
+<wiki:toc max_depth="1"/>
+
+== Why do I get "HTTP Error 405: Method Not Allowed" from the Mercurial client? ==
+
+{{{
+$ hg push
+pushing to http://...
+searching for changes
+abort: HTTP Error 405: Method Not Allowed
+}}}
+
+You must push over *https* rather than *http*, e.g. `hg push https://code.google.com/p/MYREPO`.  If you clone via *https* initially, then a plain `hg push` will work. To fix this if you already cloned via *http*, edit .hg/hgrc and change the path there.
+
+== How can I avoid typing my password in for each `hg push`? ==
+
+You can enter a default push URL in your `hgrc` configuration file, and include the username and password in the URL.  The Mercurial FAQ has an [http://www.selenic.com/mercurial/wiki/FAQ#FAQ.2BAC8-CommonProblems.How_can_I_store_my_HTTP_login_once_and_for_all_.3F entry on this].  If you do this, make sure your `hgrc` isn't readable by others!
+
+== Why isn't my username/password accepted? ==
+
+If you enter your username as part of the URL, you have to encode the "@" sign as "%40" to avoid confusing Mercurial. If you're on windows, % is an escape character in the command prompt, so you have to encode the "@" sign as "%%40".
+
+The above instructions are only relevant to non-gmail users; gmail users can use the username part of their email address, the part preceding the "@" sign, as their Google Code username.
+
+== How do I reset my repository? ==
+
+Project owners can click the "reset" link at the bottom of the checkout page. This is useful if you accidentally committed sensitive information to the repository or if you want to push from an unrelated repository.
+
+== How do I remove sensitive information from my repository? ==
+
+There is no way to change the contents of a revision without changing the identifier of that revision and all subsequent ones. So you can't silently change history; the best you can do is convince other project participants to forget about the old revisions and accept your replacement revisions.
+
+With those caveats stated, the basic process is to prepare a new repository locally, reset the repository on Google Code, and push your new repository. The following external pages give some pointers on how to prepare a local repository that eliminates a given sensitive revision or file:
+  * http://mercurial.selenic.com/guide/#removing_history (basic procedure)
+  * http://mercurial.selenic.com/wiki/EditingHistory (advanced procedure using the "mq" extension)
+  * http://mercurial.selenic.com/wiki/TransplantExtension (alternative procedure using the "transplant" command)
+
+== Why should I create a server-side clone? ==
+
+Personal user clones are a copy of a project's repository and can be created by anyone that wants to contribute to a project. They are particularly useful because they do not require the project owner's permission, but confer the same abilities that owners have over the project's repository (e.g. commit, push, etc.).
+
+Personal user clones are also useful for publishing changes to a public location and sharing them with other developers, before they are committed to the main project's repository. Once changes in a user clone have been reviewed, they are usually merged back into the mainline project with the aid of the canonical project's contributors.
+
+User clones aren't forks, in the traditional sense, where a fork has little intention to contribute back to the original project. Rather, the entire purpose of a user clone is to allow users to contribute to projects without requiring official commit access permissions. Because mercurial is a distributed (peer-to-peer) version control system, it excels at branching and merging. If the project maintainers like the new code, they just "pull" the changesets from the clone and merge them into an official project repository. It's all much more elegant than emailing patches back and forth, anonymous contributors get to use the same tools as core developers.

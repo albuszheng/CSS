@@ -1,0 +1,246 @@
+#summary Issue Tracker Data API Developer Guide: Python
+
+
+=<font color="red">Deprecated</font>=
+<font color="red">*The Issue Tracker Data API has been deprecated and will be shut down on June 14, 2013*
+
+*See http://googleblog.blogspot.com/2012/12/winter-cleaning.html *</font>
+
+-----
+
+The Issue Tracker Data API allows client applications to view and update issues on Project Hosting on Google Code in the form of Google Data API feeds. Your client application can use the Issue Tracker Data API to create new issues & issue comments, request a list of issues, request issue comments for an issue, edit existing issues, and query for issues that match a particular criteria.
+
+In addition to providing some background on the capabilities of the Issue Tracker Data API, this document provides examples of basic Data API interactions using the [http://code.google.com/p/gdata-python-client/ Python client library]. 
+
+If you're interested in understanding more about the underlying protocol that the library uses, see the [IssueTrackerAPI Protocol section] of this developer's guide.
+
+<wiki:toc max_depth="2" />
+
+= Audience =
+
+This document is intended for programmers who want to write Python client applications that can interact with the Issue Tracker Data API. This document assumes that you understand the general ideas behind the [http://code.google.com/apis/gdata/basics.html Google Data APIs protocol] and that you're familiar with the Issue Tracker GUI.
+
+For general Issue Tracker reference information, see the [IssueTrackerAPIReference Protocol reference guide].
+
+= Getting started =
+
+For help setting up the client library, see the [http://code.google.com/apis/gdata/articles/python_client_lib.html Getting Started Guide].
+
+The Python client library is available for <a href="http://code.google.com/p/gdata-python-client/downloads/list">download from the project page</a> or from the <a href="http://code.google.com/p/gdata-python-client/source">Subversion repository</a>. Also note that to use the Python client library, you must be running Python 2.2 or newer.
+
+== Creating Google account ==
+
+Project Hosting on Google Code uses Google Accounts, so if you already have a [https://www.google.com/accounts/Login Google account], you're all set.
+
+== Running the sample code ==
+
+A full working copy of this sample is available in the live_client_test.py file, under the directory /tests/gdata_tests/projecthosting/. 
+
+The sample client performs several operations on the default issue tracker to demonstrate the use of the Issue Tracker Data API. To compile the examples in this document into your own code, you'll need the following import statements:
+
+{{{
+import gdata.projecthosting.client
+import gdata.projecthosting.data
+import gdata.gauth
+import gdata.client
+import gdata.data
+import atom.http_core
+import atom.core
+}}}
+
+= Authenticating to the Issue Tracker Data API =
+
+You can access both public and private feeds using the Issue Tracker Data API. Public feeds don't require any authentication, but they are read-only. If you want to create an issue or issue comment, then your client needs to authenticate before requesting private feeds. It can authenticate using either of two approaches: !AuthSub proxy authentication or !ClientLogin username/password authentication.
+
+For more information about authentication with Google Data APIs in general, see the [http://code.google.com/apis/gdata/auth.html authentication documentation].
+
+Most of the samples in subsequent sections of this document assume that you have an authenticated !gdata.projecthosting.client object.
+
+== Authenticating `AuthSub` proxy ==
+
+`AuthSub` proxy authentication is used by web applications that need to authenticate their users to Google Accounts. The website operator and the client code don't have access to the username and password for the Project Hosting user. Instead, the client obtains special `AuthSub` tokens that allow the client to act on a particular user's behalf. For more detailed information, see the <a href="http://code.google.com/apis/accounts/AuthForWebApps.html">`AuthSub` documentation</a>.
+
+When a user first visits your application, they have not yet been authenticated. In this case, you need to display some information indicating to the user that they are not authenticated and a link directing the user to a Google page to authenticate your request for access to their Issue Tracker. The following code snippet provides a function to generate the Google page's URL. The code below retrieves the URL of the `AuthSubRequest` page:
+
+{{{
+def GetAuthSubUrl():
+  next = 'https://www.coolissuetrackingsite.com/welcome.pyc'
+  scope = 'https://code.google.com/feeds/issues'
+  secure = False
+  session = True
+  return gdata.gauth.generate_auth_sub_url.GenerateAuthSubURL(next, scope, secure, session);
+
+authSubUrl = GetAuthSubUrl();
+print '<a href="%s">Login to your Google account</a>' % authSubUrl
+}}}
+
+Notice the parameters sent to the GenerateAuthSubUrl method:
+||next||The URL of the page that Google should redirect the user to after authentication. ||
+||scope||Indicates that the application is requesting a token to access Issue feeds. The scope string to use is https://code.google.com/feeds/issues (URL-encoded, of course).||
+||secure||Indicates whether the client is requesting a secure token.||
+||session||Indicates whether the token returned can be exchanged for a multi-use (session) token.||
+
+The above example shows a call that doesn't request a secure token (the value of *secure* is *false*). The resulting request URL might look like this:
+
+{{{
+https://www.google.com/accounts/AuthSubRequest?scope=https%3A%2F%2Fcode.google.com%2Ffeeds%2Fissues%2F&amp;session=1&amp;secure=0&amp;
+}}}
+
+The user follows the link to Google's site and authenticates to their Google Account.
+
+After the user authenticates, the `AuthSub` system redirects them to the URL you specified in the *next* query parameter of the `AuthSubRequest` URL. The `AuthSub` system appends an authentication token to that URL, as the value of the *token* query parameter. For example:
+
+<code>https://www.coolissuetrackingsite.com/welcome.pyc?token=yourAuthToken</code>
+
+This token value represents a single-use `AuthSub` token. In this example, because <b>session = true</b> was specified, this token can be exchanged for an `AuthSub` session token :
+
+{{{
+token, scopes = gdata.gauth.auth_sub_string_from_url(redirect_url)
+client.auth_token = client.upgrade_token(gdata.gauth.AuthSubToken(token, scopes))
+}}}
+
+That is, you pass your one-time-use token to the *`exchangeForSessionToken`* method, along with either *null* (for unregistered mode) or a private key (for registered mode), and the `AuthSub` interface returns a session token. For more information about registered applications and private keys, see the "[http://code.google.com/apis/accounts/AuthForWebApps.html#signingrequests Signing requests]" section of the `AuthSub` documentation.
+
+Your application can then use the session token value in subsequent interactions with Project Hosting on Google Code. The client library automatically sends the token along with requests.
+
+
+== Authenticating `ClientLogin` username/password ==
+
+Use `ClientLogin` authentication if your client is a standalone, single-user "installed" client (such as a desktop application). Just call the *`client_login`* method on your !gdata.projecthosting.client object and all subsequent interactions with the issue tracker will be authentiated:
+
+{{{
+   def test_doc_examples(self):
+     if not conf.options.get_value('runlive') == 'true':
+       return
+     issues_client = gdata.projecthosting.client.ProjectHostingClient()
+
+     self.authenticating_client(issues_client, self.owner, self.password)
+
+   def authenticating_client(self, client, username, password):
+     return client.client_login(
+         username,
+         password,
+         source='your-client-name',
+         service='code')
+}}}
+
+= Retrieving a list of issues =
+
+The following sections describe how to retrieve a list of issues, issue comments, with and without query parameters.
+
+You can query a Issue Tracker public feed without authentication. Therefore, you don't need to do authentication before retrieving Issues, Issue Comments from a public Issue Tracker.
+
+== Retrieving all issues ==
+
+To retrieve all the issues in a project call the get_issues method and provide the project name:
+
+{{{
+   def retrieving_all_issues(self, client, project_name):
+     """Retrieve all the issues in a project."""
+     feed = client.get_issues(project_name)
+     for issue in feed.entry:
+       print issue.title.text
+}}}
+
+== Retrieving issues using query parameters ==
+
+The Issue Tracker Data API lets you request a set of issues that match specified criteria, such as requesting issues created or updated in a given date range, or published by a particular author. To do this, you create a *Query* object and pass it to the *!get_issues* method.
+
+For example, to send a label restricted query, use the *label* and *max_results* methods of the *Query* object. The following code snippet prints the title of each issue that matches the query's label and max_results parameters:
+
+{{{
+   def retrieving_issues_using_query_parameters(self, client, project_name):
+     """Retrieve a set of issues in a project."""
+     query = gdata.projecthosting.client.Query(label='label0')
+     feed = client.get_issues(project_name, query=query)
+     for issue in feed.entry:
+       print issue.title.text
+     return feed
+}}}
+
+Notice that the Query object is constructed using the same issue feed URL used to retrieve issues.
+
+The Issue Tracker Data API supports the following custom query parameters:
+||issue_id||int or str|| The issue to return based on the issue id.||
+||label||str||The type of issues to return based on the label set on the issue.||
+||canned_query||str||Return issues based on a canned query identifier||
+||owner||str||Return issues based on the owner of the issue. For Gmail users, this will be the part of the email preceding the '@' sign.||
+||status||str||Return issues based on the status of the issue.||
+
+The following standard query parameters are also supported:
+||text_query||str||Full text search||
+||author||str||The service returns entries where the author name and/or email address match your query string.||
+||alt||str||The Alternative representation type you'd like the feed in. If you don't specify an alt parameter, the service returns an Atom feed. This is equivalent to alt='atom'. alt='rss' returns an RSS 2.0 result feed. alt='json' returns a JSON representation of the feed. alt='json-in-script' Requests a response that wraps JSON in a script tag. alt='atom-in-script' Requests an Atom response that wraps an XML string in a script tag. alt='rss-in-script' Requests an RSS response that wraps an XML string in a script tag.||
+||updated_min||str||RFC 3339 timestamp format, lower  bounds. For example: 2005-08-09T10:57:00-08:00||
+||updated_max||str||updated time must be earlier than timestamp.||
+||pretty_print||boolean||If True the server's XML response will be indented to make it more human readable. Defaults to False.||
+||published_min||str||Similar to updated_min but for published time.||
+||published_max||str||Similar to updated_max but for published time.||
+||start_index||int or str||1-based index of the first result to be retrieved.||
+||max_results||int or str||Maximum number of results to be retrieved. Each service has a default max (usually 25) which can vary from service to service. There is also a service-specific limit to the max_results you can fetch in a request.||
+||strict||boolean||If True, the server will return an error if the server does not recognize any of the parameters in the request URL. Defaults to False.||
+
+For more information about query parameters, see the [IssueTrackerAPIReference Issue Tracker Data API Reference Guide] and the <a href="http://code.google.com/apis/gdata/reference.html#Queries">Google Data APIs Reference Guide</a>.
+
+= Retrieving issues comments for an issue=
+
+To retrieve all the issue comments for an issue call the get_comments method and Issue id:
+
+{{{
+   def retrieving_issues_comments_for_an_issue(self, client, project_name,
+                                               issue_id):
+     """Retrieve all issue comments for an issue."""
+     comments_feed = client.get_comments(project_name, issue_id)
+     for comment in comments_feed.entry:
+       print comment.content
+     return comments_feed
+}}}
+
+= Creating issues =
+
+You can use the Python client library to publish new issue entries. To accomplish this, simply use the *add_issue* function to create the issue with the following parameters: project name, issue title, issue description, owner, and labels.
+
+{{{
+   def creating_issues(self, client, project_name, owner):
+     """Create an issue."""
+     return client.add_issue(
+         project_name,
+         'my title',
+         'my summary',
+         owner,
+         labels=['label0'])
+}}}
+
+The *add_insert* returns the issue entry as it was stored by the issue tracker. The entry returned is the same one you sent, but it also contains various elements added by Project Hosting on Google Code, such as an issue id.
+
+For information about the status codes, see the <a href="http://code.google.com/apis/gdata/reference.html">Google Data API protocol reference document</a>.
+
+= Modifying an issue or creating issue comments =
+
+After authenticating, you can modify an issue by creating new issue comments. 
+
+To modify an issue, use the *update_issue* method. Using the *update_issue* method you can set the summary, content and other attributes of the issue comment. Here's an example of how to create an issue comment:
+
+{{{
+   def modifying_an_issue_or_creating_issue_comments(self, client, project_name,
+                                                     issue_id, owner, assignee):
+     """Add a comment and update metadata in an issue."""
+     return client.update_issue(
+         project_name,
+         issue_id,
+         owner,
+         comment='My comment here.',
+         summary='New Summary',
+         status='Accepted',
+         owner=assignee,
+         labels=['-label0', 'label1'],
+         ccs=[owner])
+}}}
+
+The *update_insert* method returns the issue as it was stored by the issue tracker. The entry returned is the same one you sent, but it also contains various elements added by Project Hosting on Google Code, such as a issue comment ID.
+
+For information about the status codes, see the <a href="http://code.google.com/apis/gdata/reference.html">Google Data API protocol reference document</a>.
+
+= Deleting issues/issue comments =
+
+Deleting an issue should be rarely done and is only supported through the UI. Instead close the issue instead by setting the appropriate issue status by adding an issue comment as described [#Modifying_an_issue_or_creating_issue_comments above].

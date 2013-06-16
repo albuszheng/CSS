@@ -1,0 +1,41 @@
+#summary Frequently asked questions about Git.
+#labels Git
+
+=Git FAQ=
+
+== Where can I learn more about Git? ==
+
+The [http://book.git-scm.com/ community-edited Git book] is a good place to start.
+
+== How do I convert my Subversion or Mercurial repository to Git? ==
+
+There are open source tools to do conversions to Git from many version control systems. We have had success with [http://git-core.googlecode.com/git-history/html/git-svn.html git-svn] and [http://repo.or.cz/w/fast-export.git hg-fast-export] for Subversion and Mercurial, respectively, but others might work for you as well.
+
+== How do I reset my repository? ==
+
+Project owners can click the "reset" link at the bottom of the checkout page. This is useful if you accidentally committed sensitive information to the repository or if you want to push from an unrelated repository.
+
+== Is there a size limit on git repositories? ==
+For all source control systems, there is a 4-GiB repository size limit. For git, we are starting with a push size limit of 500 MiB. If you try to push a pack over 500 MiB, your push will fail. We hope to lift this limit.
+
+== What version of Git is required? ==
+At least 1.6.6.
+
+== Where did my wiki go? ==
+Project wikis are stored in version control. For Subversion projects, the wiki can be found in "/wiki" in the root of the repository, and for Git and Mercurial projects, the wiki is stored in the separate "wiki" repository.
+
+If you convert your project from one version control system to another, you will also need to copy any wiki files into the appropriate new location. You can temporarily switch back to your old version control system and all your data, including the wiki, will still be there.
+
+== Why does Git refuse to push, saying "everything up to date"? ==
+
+If you cloned a brand new repo with just a `master` branch, then the command you probably want is `git push origin master`.
+
+More generally, `git push <remote>` with no additional arguments only pushes branches that exist in the remote already. If the remote repository is empty, nothing will be pushed. So, you should explicitly specify a branch to push, i.e. `git push <remote> <branch>`.
+
+== Can I access my repository over git:// or ssh:// instead of https:// ? ==
+In order to take advantage of the advanced scalability and load-balancing features of Google's production servers, we are only able to accept incoming HTTP connections. We have no plans to support protocols other than the Git Smart HTTP protocol introduced in v1.6.6.
+
+We do support both anonymous (read-only) and authenticated (read/write) access over HTTPS.
+
+== I put my credentials in `.netrc`, so why does git still ask me for a password? ==
+The C git client always asks for a password if you have a username in the URL. Check your command line and `.git/config` file and make sure that your `code.google.com` URLs do not include your username (the part up to the `@`).

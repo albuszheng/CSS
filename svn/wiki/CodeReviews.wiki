@@ -1,0 +1,163 @@
+#summary How to use Google Code's code review tool
+
+
+
+= How to use Google Code's code review tool =
+
+"Open source" literally means that the source code of each project can
+be accessed by project members and other users.  It is a tradition in
+many open source projects to frequently review the source code as
+changes are made.  This is a good practice because it helps catch
+software defects that might be hard to discover through testing and
+debugging.  Code reviews also help the members of the project team
+stay aware of each others' changes and aligned with the goals of the
+project.  Also, participating in code reviews can be a great way for
+people to improve their software development skills.
+
+Project hosting on Google Code offers a code review feature that is
+integrated into source code browsing.  It currently supports reviewing
+code after that code has been committed to the repository.  Reviewing
+committed code naturally leads to discussions about further commits
+for further improvements.
+
+
+== Review comments ==
+
+You must be logged in to enter a code review comment.  By default, the
+members of a project are the only people who may leave
+review comments.  However, a project owner may choose to disable all reviews,
+or allow non-members to do reviews as well.
+
+Review comments are made in the context of a source code revision or an assigned review issue. If you view the list of recent source code changes and drill into the detail page for one revision or assigned review, you will see any review comments entered there by other users.  If you navigate to a different revision, you will see a
+different set of comments, if any have been entered there.  Review
+comments are kept as part of the history of the project:  if a
+problem is found during review of one revision, it might be fixed in a
+later revision of the code, but the comment that pointed it out will
+always remain on the earlier revision.
+
+Review comments have three parts, and each part is optional:
+   * A set of line-by-line comments that are made on individual lines of any source code file
+   * A general comment on the entire source code revision
+   * A score: positive, neutral, or negative
+
+To leave line-by-line comments, browse any source code file and then
+double-click on a source code line.  You will see a text field where
+you can enter your comment on that line.  For example, if you notice a
+while-loop that can become an infinite loop in certain situations,
+you could comment on the line that has the while-loop condition.
+Line-by-line comments are drafts until you publish them. That allows
+you to revise comments as you work through the review.  For example,
+you might notice that the infinite loop situation is prevented by some
+other invariant condition, so you might revise or delete your initial
+draft.
+
+Line-by-line comments can also be entered on the side-by-side diff page.
+You can double-click on any line of the old or new file to leave a
+comment there.  You will most often want to leave comments on the new
+versions of modified lines on the right-hand side, but you may also
+decide to leave comments on the old version, or on unchanged lines
+that are indirectly affected by the change.  All comments made while
+on the diff page are part of your review of the new revision, even if
+you make them on the left-hand side.
+
+Both the source file browsing page and the diff page offer a drop-down
+menu that allows you to navigate among the files modified in a given
+revision. You will normally want to look at all files in a revision
+before publishing your comments.
+
+Once you have entered and revised all your line-by-line comments,
+click the "Publish your comments" link to go to the revision details
+page.  There you will see all your draft comments and have the
+opportunity to enter a general comment and to summarize your feelings
+about the revision with a score.  Once your comments are published,
+you can no longer edit them, but you can delete or undelete them
+if needed.
+
+
+== Stars and notifications ==
+
+When one user publishes his or her review comments, an email
+notification is sent to all other users who have starred that
+revision or assigned review.  A project owner may also configure the tool to send a
+notification of every review comment to one address, which would
+normally be a mailing list.  Individual users may opt out of these
+notification messages by using the Settings tab of your Profile page.
+Users star a revision in three ways:
+   * The author of each revision automatically stars that revision
+   * Users may click the star icon in the source changes list or revision detail page
+   * When submitting a comment on a revision that is not already starred, a checkbox offers to star the revision
+
+If you receive a code review comment notification email, and you want
+to respond, you can visit the web site to leave more comments. Alternatively, you
+can discuss it on your project mailing list.  Replying to the
+notification email itself does not record your response in the code
+review tool.
+
+
+== Keyboard shortcuts ==
+
+On the revision detail page:
+
+|| *Key* || *Action* ||
+|| j || Select next changed file in revision ||
+|| k || Select previous changed file in revision ||
+|| o || Open the diff view on the selected file ||
+
+On the source code diff page or source file browsing page:
+
+|| *Key* || *Action* ||
+|| j || Select next changed file in revision ||
+|| k || Select previous changed file in revision ||
+|| n || Go to the next diff chunk or comment ||
+|| p || Go to the previous diff chunk or comment ||
+|| u || Go up to the revision detail page ||
+|| r || Go up to the revision detail page and scroll to the review comments form ||
+
+
+== Administrative options ==
+
+Project owners may use the "Administer" tab and the "Source" subtab to configure:
+   * The types of users who may enter code review comments
+   * An address where all code review notification emails should be sent
+
+
+= Effective code reviews =
+
+It is important to keep in mind that code reviews are supposed to help
+advance the project.  The best comments are ones that can be acted on
+to improve the code.
+
+Some things to keep in mind:
+   * Code reviews are about the code, not the author. Everyone makes mistakes sometimes.
+   * Use a written style guide to resolve matters of source code style.  It's easiest if everyone just follows the style guide.
+   * Make a shared checklist of things to look for in all reviews, e.g., memory allocation conventions and input validation.
+
+== Requesting Reviews ==
+
+=== Ask for 1 to 2 reviewers ===
+
+While it may seem more effective to cast a wide net to find a reviewer by requesting an entire mailing list or large sub-group to review a change, it actually tends to reduce the response rate. The more people included on a review, the more everyone thinks someone else will get to that review before they do. In the end, your review request is more likely to be ignored.
+
+If you must have multiple reviewers, make it clear what the expectations are for each reviewer. Either noting the expectation in the review request, or contacting them through some other channel can be effective.
+
+=== Find a reviewer familiar with the code ===
+
+Finding a good code reviewer can be a little tricky, especially if you are new to a particular project. Two ways to help narrow down good reviewer candidates are to look at the authors that have recently modified a file, using the `svn log` command, and to examine a file to find the last person to change related lines, using the `svn blame` command.
+
+One other common place to look is the AUTHORS or README files within a project. These may not be quite as relevant, but can be useful in finding a point of contact.
+
+=== Consider a reviewers history ===
+
+When selecting a reviewer, consider their past review history. Some reviewers will return a response faster than others, while others may be more thorough, and there may be reviewers which cover both. Finding a reviewer who cares about the particular area of the change is important and will generally lead to faster and more helpful reviews.
+
+=== Warn reviewers about big changes ===
+
+If you will be sending the reviewer a large change to review, warn them ahead of time and set expectations on the amount of time required and when the reviewer will have time to perform the review. Suddenly receiving a large review without notice can be received as not respecting the reviewers time.
+
+=== Factor time into reviews ===
+
+If your reviewer happens to be in a different time zone, be aware of the times they are likely to perform reviews. If the reviewer is multiple time zones away, sending them a review at the end of a coding session can work well since they can complete it before you return the next day. In the same sense, sending it earlier in the day to that same reviewer can result in a longer wait time for the review than someone in the same time zone.
+
+=== Request smaller reviews ===
+
+If a change can be easily broken up into smaller changes, it will make it considerably easier on the reviewer to send multiple small changes than one large one. Don't split up changes if they are one cohesive change even if it is large.

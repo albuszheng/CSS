@@ -1,0 +1,58 @@
+#summary The general direction and scope of project hosting on Google Code
+
+
+= Making Project Hosting on Google Code Better =
+
+If you are interested in understanding the why Google Code's project hosting facility has and doesn't have certain features, how to get bugs fixed, or contribute ideas, then this document is for you.
+
+== Introduction ==
+
+To start with the basics, why do we host open source projects in the first place? The short answer is that project hosting exists to help the open source world. We've infused a slightly longer answer into our mission statement:
+
+== Mission Statement ==
+
+*To support the open source community by providing a scalable, reliable, and fast collaborative development environment for open source software, docs, and standards that promotes best practices in open source software engineering.*
+
+We spent a lot of time on that sentence and really tried to pack it with meaning. So, if you'll indulge us, let's explain why our mission statement is formulated the way that it is:
+
+== "To support the open source community" ==
+
+Our primary goal is to do what we think is best for the open source community as a whole.  One way of helping is to provide a lightweight collaborative development environment that's designed to be used as a one-stop project hosting facility or provide a la carte features to meet the needs of an open source project that just needs one part of our system.
+
+Our goal is to provide project hosting features that are generally useful for open source software development.  This means that we most likely will not be adding more arcane features that meet the needs of a very specific subset of open source projects.  Our general guideline on adding features is that if a feature doesn't apply to at least 80% of the existing open source projects, we won't add it.
+
+In addition, we think that license proliferation is bad for the open source community, so we only allow a subset of licenses to be used on Google Code as a way of discouraging license proliferation. License proliferation means the creation and use of new OSS licenses that have no reason for existing.  There are over 200 open source approved licenses, most of which are variants of existing licenses that do not add much value.  This state of affairs makes compliance with open source licenses a nightmare because you can no longer simply rely on having a small number of licenses if you use open source libraries (in either an open source or a commercial product), but instead have to deal with mixing code from as many licenses as you use libraries.  This is not just bad from a legal perspective, but it is a huge turnoff for people wanting to use and create open source.  The licenses we have chosen cover the needs of 99% of our users, and our stand on license proliferation has actually helped to create a dialog about what licenses people should be using, and given us a chance to educate people about good license choice.
+
+Lastly, our feature set intentionally excludes many of the access control and management-oriented features that "enterprise" collaborative development environments provide because we think that these features are inappropriate for the majority of open source projects.  Beyond that, since we have limited engineering resources, we've concentrated on integrating one of each tool into our application (e.g. one version control system, one issue tracker, one wiki, etc.) and to do it well.
+
+== "scalable, reliable, and fast" ==
+
+We intend to scale seamlessly to over a million projects, accommodating any "Slashdot effects" without degrading service to either the project being slashdotted or any other projects we host.  Our goal for reliability is 99.99% uptime, no 500 errors, and no lost data, ever (We keep multiple backups in several different geographic locations). As part of this, we want to provide a multi-homed service that will accommodate data center downtime without inconveniencing end-users.
+
+As for speed, our website should provide subsecond response times, and our Subversion server should be as fast or faster than a stock Subversion DAV server.  We know that we're not there yet, but we're working on it.
+
+As for usability, we follow the lead set by other successful Google products that emphasize fast interaction, quick task completion, and a clean visual appearance. Specifically, our issue tracker and subversion tools should have performance that is on par with the best competing tools. We focus on high-frequency use cases, but allow our target audience the versatility to handle a long-tail of diverse usage.  For example, our issue tracker makes it easy for teams to track fields that are specific to the needs of their project, and even to track unusual issues that don't fit any a priori schema. We balance the needs of different classes of users to help maintain the overall health of the community. For example, we limit the ability of project owners to customize project home pages in any ways that would make it harder for end-users to quickly navigate through multiple projects.
+
+== "collaborative development environment" ==
+
+Project hosting on Google Code provides the tools necessary for engineers to work together to build, and maintain open source software.  Collaboration is key to building better software, and to building better software development communities.
+
+
+== "for open source software, docs, and standards" ==
+
+We only intend to host projects that are open source software projects, documentation projects directly related to open source software development, and projects for the development and maintenance of open standards.
+
+== "that promotes best practices in open source software engineering" ==
+
+We've tried to make it easy for our users to follow "best practices" in software engineering, specifically with regard to open source.
+
+
+== So... ==
+
+This mission is reflected in many of the features that we've added as well as, more importantly, the features that we haven't added.
+
+== We Want To Hear From You ==
+
+If you have questions or comments, or support requests, please join our mailing list at google-code-hosting@googlegroups.com.  If you'd like to report a bug or file a feature request, first search through the open issues at http://code.google.com/p/support/issues/list to see if there's an existing issue that covers your needs and indicate your interest by starring the issue (Note that you have to be logged into your Google account to star an issue); the more people that star an issue, the higher it will rank on our list of priorities.  If you don't find an issue that matches your request, please file a new issue at http://code.google.com/p/support/issues/entry.
+
+_The content on this page created by Google is licensed under the [http://creativecommons.org/licenses/by/3.0/ Creative Commons Attribution 3.0 License].  User-generated content is not included in this license._

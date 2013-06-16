@@ -1,0 +1,275 @@
+#summary Issue Tracker Data API Developer Guide: Java
+
+=<font color="red">Deprecated</font>=
+<font color="red">*The Issue Tracker Data API has been deprecated and will be shut down on June 14, 2013*
+
+*See http://googleblog.blogspot.com/2012/12/winter-cleaning.html *</font>
+
+-----
+
+The Issue Tracker Data API allows client applications to view and update issues on Project Hosting on Google Code in the form of Google Data API feeds. Your client application can use the Issue Tracker Data API to create new issues & issue comments, request a list of issues, request issue comments for an issue, edit existing issues, and query for issues that match a particular criteria.
+
+In addition to providing some background on the capabilities of the Issue Tracker Data API, this document provides examples of basic Data API interactions using the [http://code.google.com/p/gdata-java-client/ Java client library]. If you're interested in understanding more about the underlying protocol that the library uses, see the [IssueTrackerAPI Protocol section] of this developer's guide.
+
+<wiki:toc max_depth="2" />
+
+= Audience =
+
+This document is intended for programmers who want to write Java client applications that can interact with the Issue Tracker Data API. This document assumes that you understand the general ideas behind the [http://code.google.com/apis/gdata/basics.html Google Data APIs protocol], and that you're familiar with the Issue Tracker GUI.
+
+For reference information about the classes and methods provided by the client library, see the [IssueTrackerAPIJava Java client library API reference]. For general Issue Tracker reference information, see the [IssueTrackerAPIReference Protocol reference guide].
+
+= Getting started =
+
+For help setting up the client library, see the [http://code.google.com/support/bin/answer.py?answer=78455 Getting Started Guide].
+
+The Java client library requires Java 1.5. After [http://code.google.com/p/gdata-java-client/downloads/list downloading the client library], you'll find the classes you need to get started in *java/lib/gdataclient-1.0.jar* file.
+
+== Creating Google account ==
+
+Project Hosting on Google Code uses Google Accounts, so if you already have a [https://www.google.com/accounts/Login Google account], you're all set.
+
+== Running the sample code ==
+
+A full working sample client, containing all the sample code shown in this document, is available in the Java client library distribution, under the directory {{{gdata/java/sample/projecthosting}}}. Build and execution instructions are included in the same directory in the README.txt file.
+
+The sample client performs several operations on the default issue tracker to demonstrate the use of the Issue Tracker Data API.
+
+To compile the examples in this document into your own code, you'll need the following import statements:
+
+{{{
+import com.google.gdata.client.*;
+import com.google.gdata.client.projecthosting.*;
+import com.google.gdata.data.*;
+import com.google.gdata.data. projecthosting.*;
+import com.google.gdata.util.*;
+import java.io.IOException;
+import java.net.URL;
+}}}
+
+= Authenticating to the Issue Tracker Data API =
+
+You can access both public and private feeds using the Issue Tracker Data API. Public feeds don't require any authentication, but they are read-only. If you want to create an issue or issue comment, then your cient needs to authenticate before requesting private feeds. It can authenticate using either of two approaches: !AuthSub proxy authentication or !ClientLogin username/password authentication.
+
+For more information about authentication with Google Data APIs in general, see the [http://code.google.com/apis/gdata/auth.html authentication documentation].
+
+Most of the samples in subsequent sections of this document assume that you have an authenticated !ProjectHostingService object.
+
+== Authenticating `AuthSub` proxy ==
+
+`AuthSub` proxy authentication is used by web applications that need to authenticate their users to Google Accounts. The website operator and the client code don't have access to the username and password for the Project Hosting user. Instead, the client obtains special `AuthSub` tokens that allow the client to act on a particular user's behalf. For more detailed information, see the <a href="http://code.google.com/apis/accounts/AuthForWebApps.html">`AuthSub` documentation</a>.
+
+When a user first visits your application, they have not yet been authenticated. In this case, you need to display some information indicating to the user that they are not authenticated and a link directing the user to a Google page to authenticate your request for access to their Issue Tracker. The Java client library provides a function to generate the Google page's URL. The code below retrieves the URL of the `AuthSubRequest` page:
+
+{{{
+String next = "https://www.example.com/welcome.html";
+String scope = "https://code.google.com/feeds/issues";
+boolean secure = false;
+boolean session = true;
+String authSubLogin = AuthSubUtil.getRequestUrl(next, scope, secure, session);
+}}}
+
+The *getRequestUrl* method takes the following parameters (corresponding to the query parameter used by the `AuthSubRequest` handler):
+
+||next||The URL of the page that Google should redirect the user to after authentication. ||
+||scope||Indicates that the application is requesting a token to access Issue feeds. The scope string to use is https://code.google.com/feeds/issues (URL-encoded, of course).||
+||secure||Indicates whether the client is requesting a secure token.||
+||session||Indicates whether the token returned can be exchanged for a multi-use (session) token.||
+
+The above example shows a call that doesn't request a secure token (the value of *secure* is *false*). The resulting request URL might look like this:
+
+{{{
+https://www.google.com/accounts/AuthSubRequest?scope=http%3A%2F%2Fcode.google.com%2Ffeeds%2Fissues%2F&amp;session=1&amp;secure=0&amp;
+}}}
+
+The user follows the link to Google's site and authenticates to their Google Account.
+
+After the user authenticates, the `AuthSub` system redirects them to the URL you specified in the *next* query parameter of the `AuthSubRequest` URL. The `AuthSub` system appends an authentication token to that URL, as the value of the *token* query parameter. For example:
+
+<code>https://www.example.com/welcome.html?token=yourAuthToken</code>
+
+This token value represents a single-use `AuthSub` token. In this example, because <b>session = true</b> was specified, this token can be exchanged for an `AuthSub` session token by calling the <a href="/apis/accounts/AuthForWebApps.html#AuthSubSessionToken"><b>`AuthSubSessionToken`</b></a> service, as follows, where *urlFromAuthSub* is the URL that `AuthSub` appended the token to:
+
+{{{
+String token = AuthSubUtil.getTokenFromReply(urlFromAuthSub);
+String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
+}}}
+
+That is, you pass your one-time-use token to the *`exchangeForSessionToken`* method, along with either *null* (for unregistered mode) or a private key (for registered mode), and the `AuthSub` interface returns a session token. For more information about registered applications and private keys, see the "[http://code.google.com/apis/accounts/AuthForWebApps.html#signingrequests Signing requests]" section of the `AuthSub` documentation.
+
+Your application can then use the session token value in subsequent interactions with Project Hosting on Google Code. The client library automatically sends the token along with requests.
+
+== Authenticating `ClientLogin` username/password ==
+
+Use `ClientLogin` authentication if your client is a standalone, single-user "installed" client (such as a desktop application). Just call the *`setUserCredentials`* method on your !ProjectHostingService object and all subsequent interactions with the issue tracker will be authentiated:
+
+{{{
+ProjectHostingService myService = new ProjectHostingService("exampleCo-exampleApp-1"); 
+myService.setUserCredentials("user@domain.com", "secretPassword");
+}}}
+
+In the snippet above, we pass one parameter to the !ProjectHostingService constructor: the name of our application in the form companyName-applicationName-versionNumber.
+
+For more information about the parameters, see the <a href="http://code.google.com/apis/accounts/docs/AuthForInstalledApps.html#Request">Authentication for Installed Applications</a> document.
+
+<i><b>Note: Use the same token for all requests in a given session; don't acquire a new token for each issue request.</b></i>
+
+= Retrieving a list of issues =
+
+The following sections describe how to retrieve a list of issues, issue comments, with and without query parameters.
+
+You can query a Issue Tracker public feed without authentication. Therefore, you don't need to call the `setUserCredentials` method or do `AuthSub` authentication before retrieving Issues, Issue Comments from a public Issue Tracker.
+
+== Retrieving all issues ==
+
+To retrieve all the issues in a project call the getFeed method and send the Issue URL:
+
+{{{
+public static void printAllIssues(ProjectHostingService myService, String project)
+    throws ServiceException, IOException {
+  // Request the feed
+  URL feedUrl = new URL("https://code.google.com/feeds/issues/p/" + project + "/issues/full");
+  IssuesFeed resultFeed = myService.getFeed(feedUrl, IssuesFeed.class);
+
+  // Print the results
+  for (int i = 0; i < resultFeed.getEntries().size(); i++) {
+    IssuesEntry entry = resultFeed.getEntries().get(i);
+    System.out.println("\t" + entry.getTitle().getPlainText());
+  }
+  System.out.println();
+}
+}}}
+
+== Retrieving issues using query parameters ==
+
+The Issue Tracker Data API lets you request a set of issues that match specified criteria, such as requesting issues created or updated in a given date range, or published by a particular author. To do this, you create a *Query* object and pass it to the *!ProjectHostingService.getQuery* method.
+
+For example, to send a date-range query, use the *setUpdatedMin* and *setUpdatedMax* methods of the *Query* object. The following code snippet prints the title of each Issue, Issue Comment updated between the given start time and end time:
+
+{{{
+public static void printDateRangeQueryResults(
+    ProjectHostingService myService, String project,
+    DateTime updatedMin, DateTime updatedMax)
+    throws ServiceException, IOException {
+  // Create query and submit a request
+  URL feedUrl = new URL("https://code.google.com/feeds/issues/p/" + project + "/issues/full");
+  IssuesQuery myQuery = new IssuesQuery(feedUrl);
+  myQuery.setUpdatedMin(updatedMin);
+  myQuery.setUpdatedMax(updatedMax);
+  IssuesFeed resultFeed = myService.query(myQuery, IssuesFeed.class);
+
+  // Print the results
+  System.out.println(resultFeed.getTitle().getPlainText() +
+      " Issues, Issue Comments between " + updatedMin + " and " + updatedMax);
+  for (int i = 0; i < resultFeed.getEntries().size(); i++) {
+    IssuesEntry entry = resultFeed.getEntries().get(i);
+    System.out.println("\t" + entry.getTitle().getPlainText());
+    System.out.println("\t" + entry.getUpdated().toStringRfc822());
+  }
+  System.out.println();
+}
+}}}
+
+Notice that the Query object is constructed using the same issue feed URL used to retrieve issues.
+
+The Issue Tracker Data API supports the following query parameters:
+||setAuthor||Return issues based on who reported the issue. For Gmail users, this will be the part of the email preceding the '@' sign.||
+||setCan||Return issues based on a canned query identifier such as <ul><li>'All issues' <b>all</b></li><li>'Open issues' <b>open</b></li><li>'Open and owned by me' <b>owned</b></li><li>'Open and reported by me' <b>reported</b></li><li>'Open and starred by me'<b>starred</b></li><li>'New issues' <b>new</b></li><li>'Issues to verify' <b>to-verify</b></li></ul>||
+||setId||The issue to return based on the issue id.||
+||setLabel||The type of issues to return based on the label set on the issue.||
+||setMaxResults||Set the maximum number of entries to return. If you want to receive all of the Issues, Issue Comments, rather than only the default maximum, you can specify a very large number for this property.||
+||setOwner||Return issues based on the owner of the issue. For Gmail users, this will be the part of the email preceding the '@' sign.||
+||setPublishedMin, setPublishedMax||The bounds on entry publication dates.||
+||setStartIndex||The 1-based index of the first result to be retrieved (for paging).||
+||setStatus||Return issues based on the status of the issue.||
+||setUpdatedMin, setUpdatedMax||The bounds on entry update dates.||
+
+For more information about query parameters, see the [IssueTrackerAPIReference Issue Tracker Data API Reference Guide] and the <a href="http://code.google.com/apis/gdata/reference.html#Queries">Google Data APIs Reference Guide</a>.
+
+= Retrieving issues comments for an issue=
+
+To retrieve all the issue comments for an issue call the getFeed method and send the Issue URL:
+
+{{{
+public static void printAllIssueComments(ProjectHostingService myService, String project, String IssueId)
+    throws ServiceException, IOException {
+  // Request the feed
+  URL feedUrl = new URL("https://code.google.com/feeds/issues/p/" + project + "/issues/" + issueId + "/comments/full");
+  IssueCommentsFeed resultFeed = myService.getFeed(feedUrl, IssueCommentsFeed.class);
+
+  // Print the results
+  for (int i = 0; i < resultFeed.getEntries().size(); i++) {
+    IssueCommentsEntry entry = resultFeed.getEntries().get(i);
+    TextContent textContent = (TextContent) entry.getContent();
+    if (textContent != null && textContent.getContent() != null) {
+      HtmlTextConstruct htmlConstruct = (HtmlTextConstruct) textContent.getContent();
+      System.out.println("\t" + htmlConstruct.getHtml());
+    }
+  }
+  System.out.println();
+}
+}}}
+
+= Creating issues =
+
+You can use the Java client library to publish new issue entries.
+
+First, create a *!IssuesEntry* object to represent the issue. Then you can set the summary, content and other attributes of the issue. Finally, use the * !ProjectHostingService* object to create the issue. Here's an example of how to create an issue:
+
+{{{
+public static IssuesEntry createIssue(
+    ProjectHostingService myService,
+    String project, String summary, String content, String userName)
+    throws ServiceException, IOException {
+  // Create the entry to insert
+  IssuesEntry myEntry = new IssuesEntry();
+  myEntry.setSummary(new PlainTextConstruct(summary));
+  myEntry.setContent(new HtmlTextConstruct(content));
+
+  Person author = new Person();
+  author.setName(userName);
+  myEntry.getAuthors().add(author);
+
+  // Ask the service to insert the new entry
+  URL postUrl = new URL("https://code.google.com/feeds/issues/p/" + project + "/issues/full");
+  return myService.insert(postUrl, myEntry);
+}
+}}}
+
+The *insert* method takes the service's post URL as a parameter. Then the method returns the entry as it was stored by the issue tracker. The entry returned is the same one you sent, but it also contains various elements added by Project Hosting on Google Code, such as a issue ID.
+
+For information about the status codes, see the <a href="http://code.google.com/apis/gdata/reference.html">Google Data API protocol reference document</a>.
+
+= Modifying an issue or creating issue comments =
+
+After authenticating, you can modify an issue by creating new issue comments. 
+
+First, create a *!IssueCommentsEntry* object to represent the issue comment. Then you can set the summary, content and other attributes of the issue comment. Finally, use the * !ProjectHostingService* object to insert the issue comment. Here's an example of how to create an issue comment:
+
+{{{
+public static IssueCommentsEntry createIssueComment(
+    ProjectHostingService myService,
+    String project, String issueId,
+    String content, String authorName)
+    throws ServiceException, IOException {
+  // Create the entry to insert
+  IssueCommentsEntry myEntry = new IssueCommentsEntry();
+  myEntry.setContent(new HtmlTextConstruct(content));
+
+  Person author = new Person();
+  author.setName(authorName);
+  myEntry.getAuthors().add(author);
+
+  // Ask the service to insert the new entry
+  URL postUrl = new URL("https://code.google.com/feeds/issues/p/" + project + "/issues/" + issueId + "/comments/full");
+  return myService.insert(postUrl, myEntry);
+}
+}}}
+
+The *insert* method takes the service's post URL as a parameter. Then the method returns the entry as it was stored by the issue tracker. The entry returned is the same one you sent, but it also contains various elements added by Project Hosting on Google Code, such as a issue comment ID.
+
+For information about the status codes, see the <a href="http://code.google.com/apis/gdata/reference.html">Google Data API protocol reference document</a>.
+
+= Deleting issues/issue comments =
+
+Deleting an issue should be rarely done and is only supported through the UI. Instead close the issue instead by setting the appropriate issue status by adding an issue comment as described [#Modifying_an_issue_or_creating_issue_comments above].

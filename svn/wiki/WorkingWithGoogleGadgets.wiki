@@ -1,0 +1,235 @@
+#summary A guide to using and authoring basic gadgets for use on Google Code
+#labels Gadgets
+
+= Working with Google Gadgets =
+
+<wiki:toc max_depth="2" />
+
+= Introduction =
+
+In 2008 we [http://google-code-updates.blogspot.com/2008/10/gadgets-and-google-code.html launched gadget support] throughout our project hosting service, allowing users to add gadgets to any wiki or project homepage. This guide aims to provide a starting point for both using and authoring simple gadgets within your own projects.
+
+= Using existing gadgets =
+
+A number of specialized gadgets have already been created for project hosting, with some being listed on our InterestingDeveloperGadgets page. The Project Feeds section of each project also provides a list of custom gadgets (see our [http://code.google.com/p/support/feeds support project] as an example).  You can also find thousands of non-developer specific gadgets at http://www.google.com/ig/directory .
+
+Gadgets can be added to any wiki or project home page using our new `<wiki:gadget...>` syntax. For example, the gadget found at:
+
+{{{
+http://google-code-project-hosting-gadgets.googlecode.com/svn/trunk/examples/issueupdates_example.xml
+}}}
+
+Can be added using the following code:
+
+{{{
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/trunk/examples/issueupdates_example.xml" up_projectName="support" />
+}}}
+
+Resulting in the following:
+
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/build/prod/changes/gcChanges.xml" up_projectName="support" />
+
+In this case, the `up_projectName` attribute is a configuration option specific to this gadget used to control which project's information is displayed.
+
+= Creating your own gadgets =
+
+Google Gadgets are simple HTML and Javascript applications that can be embedded in webpages and other apps. From the developer perspective, they're normally small XML files used to wrap HTML, with metadata used by the gadgets API. Full documentation can be found on the [http://code.google.com/apis/gadgets/ Gadgets API] homepage, but below are two simple examples.
+
+== Hello, world! ==
+
+Taken from the [http://code.google.com/apis/gadgets/docs/gs.html#Hello_World Getting Started] guide, the following is an example of a simple gadget that simply displayed "Hello, world!"
+
+{{{
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="hello world example" /> 
+  <Content type="html">
+     <![CDATA[ 
+       Hello, world!
+     ]]>
+  </Content> 
+</Module>
+}}}
+
+== Embedding a remote URL ==
+
+You can also use Gadgets to display the contents of a remote page.
+
+{{{
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="remote content example" />
+  <Content type="url" href="http://code.google.com" />
+</Module>
+}}}
+
+You can also specify dimensions for your gadget in your actual wiki syntax:
+
+{{{
+<wiki:gadget url="..." width="540" height="400" />
+}}}
+
+== Advantages of `type=html` over `type=url` ==
+
+`type=html` gadgets have a few advantages over type=url gadgets:
+
+  * They cache very well.  The IFRAME that renders the gadget on the browser is cached by the browser, so subsequent views of the gadget by users who have seen the gadgets do not incur any additional HTTP hits.
+  * If you use the `_IG_Fetch...()` or `Gadgets.io` proxies, those responses are also cached by the browser.  This means even dynamic gadgets have excellent load performance while still being customizable.
+  * `type=url` gadgets incur a redundant HTTP call to the Gadget renderer, which increases latency.
+  * They generally are better supported by the APIs than type=url gadgets.
+
+
+In some cases, this means that you need to rewrite some of your functionality, but the effort is usually minimal.  Plus, by using APIs to fetch your data rather than just generating HTML, you are creating APIs that other people can use to create mashups for developers.
+
+== Gracefully Degrade ==
+Gadgets can render in a variety of containers.  Some of them have different end-user expectations than others:
+
+  * iGoogle users expect to be able to customize their gadget.
+  * Google Code Wiki viewers do not expect to customize the gadget; instead, it is up to the page owner to customize the gadget for the viewer (by passing in user prefs).
+
+
+When you code your gadget, code with both use cases in mind.  Your iGoogle users will appreciate the ability to customize the gadget through a familiar interface (the "edit settings" menu).
+
+If you try to call `prefs.set()` and the gadget is being rendered on the Wiki, you'll get an exception because that is not a supported feature on Google Code.  Therefore, be sure to code your gadget such that it works well in both iGoogle and Google Code.  There is a simple way to determine if your gadget is on iGoogle: write some JavaScript that searches document.location for "synd=ig".  If that's present, you know it is safe to call prefs.set().
+
+== Use Standard Preference Names ==
+
+Google Code users will use a syntax that looks like this:
+
+{{{
+<wiki:gadget url="..." up_pref1="val1" up_pref2="val2"/> 
+}}}
+
+To make life easier on users of the Wiki, please use a standard user pref name for the project name.  Example:
+
+{{{
+<UserPref name="projectName" display_name="Project Name" default_value="no_project_selected" />
+}}}
+
+If you use something other than `projectName`, users would have to inspect your gadget to figure out what the variable is.  Here's an example:
+
+{{{
+<wiki:gadget url="..." up_projectName="google-web-toolkit"/> 
+}}}
+
+Also, by using a user pref value for specifying gadget customizations, your gadget becomes more portable across the different ways that gadgets can be embedded:
+
+  * On the the "add to your webpage" form (http://www.gmodules.com/ig/creator?url=http://www.google.com/ig/modules/horoscope.xml) presents user preferences as a form so that the user can customize the gadget prior to getting the snippet.
+  * On iGoogle, using UserPref values populates the "edit settings" window so that users can change the query after the gadget is added to their page.
+
+== Use the Asset Proxy ==
+
+Referring to images, .css, or .js files directly from your gadget can cause performance or load problems.  Instead, take advantage of the gadgets asset proxy by prefixing all your static URLs with `/gadgets/proxy?url=`.  Here's an example:
+
+{{{
+<img border="0"
+src="/gadgets/proxy?url=http://igoogleinfogadget.googlecode.com/svn/trunk/img_fallback/content_start.gif"
+/>
+}}}
+
+You can use the same trick for CSS `background-image: url()`, `<script src=...>`, etc.  You can also use the [http://code.google.com/apis/opensocial/docs/0.8/reference/gadgets/#gadgets.io.getProxyUrl gadgets.io.getProxyUrl()] method to compute the proxy URLs dynamically, which is useful for any content loaded via JavaScript, AJAX, jQuery.load(), etc.
+
+
+
+
+
+= Publishing your gadgets =
+
+== Hosting gadgets on Google Code ==
+
+It's also possible to host your gadgets directly out of your project hosting repository. As in the example above, the file:
+
+{{{
+http://google-code-project-hosting-gadgets.googlecode.com/svn/trunk/examples/issueupdates_example.xml
+}}}
+
+Is just a normal file stored in `google-code-project-hosting-gadgets`'s svn repository, and can be referenced using:
+
+{{{
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/trunk/examples/issueupdates_example.xml" />
+}}}
+
+If you do plan on hosting your gadget and related resources out of your source repository, though, ensure that all of your resource calls go through [http://code.google.com/apis/gadgets/docs/reference/#gadgets.io.getProxyUrl gadget.io.getProxyUrl] or [http://code.google.com/apis/gadgets/docs/reference/#gadgets.io.makeRequest gadget.io.makeRequest]. Gadgets themselves are cached, but direct links to files within your repository can lead to a significant decrease in performance.
+
+== Testing Your Gadget ==
+
+You should test your gadget in the following places:
+
+  * on iGoogle: http://www.google.com/ig/add?moduleurl=http://www.google.com/ig/modules/horoscope.xml&up_sign=Capricorn
+  * in the creator: http://www.gmodules.com/ig/creator?url=http://www.google.com/ig/modules/horoscope.xml&up_sign=Taurus
+  * on the Wiki: <wiki:gadget .../>
+
+
+Test in multiple browsers, and be sure to use Firebug with error reporting enabled when interacting with your gadget.
+
+== Promote the Gadget From Your Site ==
+
+To promote the gadget for use on iGoogle: See [http://www.google.com/webmasters/add.html Add to Google - Information for Publishers].  You can also add the gadget pre-customized:
+
+{{{
+http://www.google.com/ig/add?moduleurl=http://www.google.com/ig/modules/horoscope.xml&up_sign=Capricorn
+}}}
+
+To promote the gadget for embedding on arbitrary 3rd party web sites, use the creator.  You can link to the creator by constructing a URL as follows:
+
+{{{
+http://www.gmodules.com/ig/creator?url=http://www.google.com/ig/modules/horoscope.xml&up_sign=Taurus
+}}}
+
+Note that the &up_= variables only accept characters
+
+== Promote your Gadgets in the iGoogle Directory ==
+Follow the instructions at http://www.google.com/ig/submit to add your gadget to the directory.  Be sure to include descriptive metadata so that your gadget can be found more easily.
+
+= Integrating other Google products =
+
+Gadgets also allow for tighter integration with other Google products. Google Docs, for example, outputs iframed content that can be adapted into gadgets, while Youtube provides Flash embed codes that can be embedded in a normal HTML gadget.
+
+== Google Docs Forms and Presentations ==
+
+Using [http://docs.google.com/ Google Docs] it's possible to create simple and customizable feedback forms, then embed them within any webpage. Taking the embed code provided by Google Docs:
+
+{{{ 
+<iframe src="http://spreadsheets.google.com/embeddedform?key=pcei2KUN61t4vbuSjTGjzNw" width="310" height="566" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+}}}
+
+We can convert the content the iframe into a gadget:
+
+{{{
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="Gadget Form Example" />
+  <Content type="url" href="http://spreadsheets.google.com/embeddedform?key=pcei2KUN61t4vbuSjTGjzNw" />
+</Module>
+}}}
+
+Then reference it within our project home page or a wiki page:
+
+{{{
+<wiki:gadget url="..." width="310" height="566" />
+}}}
+
+Similar embed codes are provided for presentations as well, allowing presentations to be inserted alongside their related wiki documentation.
+
+== Embedding YouTube videos ==
+
+It's now possible to embed videos directly using our new video gadget, which currently handles both YouTube and Google Video content:
+
+{{{
+<wiki:gadget url="http://google-code-project-hosting-gadgets.googlecode.com/svn/trunk/video/gcVideo.xml" up_video="..." />
+}}}
+
+There is also a shorthand wiki tag, `<wiki:video>`, for embedding videos. See WikiSyntax for more information.
+
+== Google Groups ==
+
+[http://markmail.org/gadgets/builder/ MarkMail's Gadget Builder] provides step-by-step tool for generating gadgets for any Google Group based on simple search term.
+
+== Google Moderator ==
+
+[http://www.google.com/moderator Google Moderator] allows users to submit feedback and vote on feedback from others.  You can use it as a way of collecting basic input beyond the issue tracker.  [http://www.google.com/moderator/#13 Create a series] for your project first, and then put the URL of that series in the gadget code:
+
+{{{
+<wiki:gadget url="http://www.google.com/moderator/static/moderator-embed-gadget.xml" 
+height="400" width="900" up_url="http://www.google.com/moderator/#15/e=1c1a0&t=1c1a0.40" up_sort="HOT" up_hl="en" />
+}}}

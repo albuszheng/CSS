@@ -1,0 +1,289 @@
+#summary How to configure permisions in your project (Advanced topic)
+
+= Permissions =
+
+|| *Important:*  Google Code only hosts open source projects. <br> The permissions customizations described here are not sufficient for hosting proprietary software development projects. ||
+
+
+<wiki:toc max_depth="1" />
+
+<br>
+----
+
+= Introduction =
+
+In open source software development, anyone can access the source code
+of the project.  And, it's expected that the development process be
+transparent by allowing anyone to access all issues and project
+documentation.  That transparency allows potential users or
+contributors to educate themselves and evaluate the state of the
+project.  Transparency should be the rule for almost every project
+almost all the time.  Exceptions to the rule are rare but important,
+especially in large, very active projects.
+
+Most project owners will never need to configure permissions in their
+project.  Instead, it is usually best to simply grant Committer roles
+to everyone involved in the project, and use plain language to
+describe their expected duties.  In the event that someone does
+something wrong, it is better to undo the change after the fact,
+rather than limit each person with a narrow set of permissions ahead
+of time.
+
+
+<br>
+----
+
+= Quick start =
+
+Here are step-by-step instructions for handling specific situations
+where you might need to customize permissions.  If none of these apply
+to you, then you probably don't need to do anything with permissions.
+
+
+== How do I track an existing issue about a security hole? ==
+
+Sometimes you may want to work on closing the security hole before
+disclosing details of the problem.  However, keep in mind that
+potential attackers might have already independently discovered those
+same details.
+
+If the issue has already been entered:
+  # Label the issue `Restrict-View-Commit`
+
+That will restrict access to the issue to only users who already have
+permission to commit source code in the project.  But, be aware that
+some people may have already seen the issue, and an email notification
+of the issue being entered may have already been sent to the project
+mailing list (if you configured that).  Email notifications of future
+issue changes will only be sent to users who have permission to
+view the issue.
+
+If the issue is so sensitive that only a subset of committers should
+be able to access it, use a label such as `Restrict-View-CoreTeam`.
+See the Reference section below for details.
+
+== How do I set up for future security hole issues? ==
+
+  # Visit the *Issue Tracker* subtab of the *Administer* tab.
+  # Define an issue template for security hole reports.
+  # In that issue template, prompt the user to enter relevant information about the exploit.
+  # Specify label `Restrict-View-Commit` in the template.
+
+Now, when a user enters a new issue, the *Template* field will include a
+choice for your security template.  When a user uses that template, the
+issue will only be accessible to project members who have commit
+access.  Email notifications of the issue's creation, and any future
+changes to the issue, will only be sent to users who have permission
+to view the issue.
+
+See below for examples of more sophisticated ways to control access to
+issues.  Please do not restrict access to all the issues in your
+project, because that is a bad practice for open source projects and may
+prompt us to stop hosting your project on Google Code.
+
+
+== How do I allow a non-committer to triage issues? ==
+
+  # Visit the *Project Members* subtab of the *Administer* tab.
+  # Enter the user's email address as a Contributor and submit the form.
+  # Follow the "people" link, or use the *People* subtab of the *Project Home* tab.
+  # Click on the row for the new contributor.
+  # Use plain language to describe the duties that you expect this contributor to handle.
+  # Click the *Show permissions* link
+  # Check the checkbox for *!EditIssue*
+  # Submit the form
+
+
+By granting the `EditIssue` permission you allow the contributor to
+triage issues.  But, they will not have permission to edit wiki pages or
+commit source code changes, unless you grant those permissions also.
+
+== How do I allow a non-committer to edit wiki pages? ==
+  # Same as above, except grant *!EditWiki*
+
+
+== How do I allow anyone to edit wiki pages? ==
+  # Keep wiki page comments enabled in your project: anyone may leave comments.
+  # Periodically review comments and incorporate good ones into the page, and delete worthless or spam comments.
+  # Or, recruit contributors to help maintain the project pages and incoporate non-member comments.
+
+We do not offer the ability for anyone to edit wiki pages because of
+spam concerns.  Even if we did offer that option, projects that chose
+to enable it would need to spend significant time maintaining pages to
+keep out spam.
+
+
+== How do I give a user commit access to just one subdirectory or branch? ==
+  # Grant them the Committer role in the project.
+  # Visit the *People* page for that committer.
+  # Describe the duties that you expect him/her to perform, including relevant subdirectories or branches.
+
+We do not offer path-based access control in our version control
+system.  Instead, you should agree with committers on expectated
+duties, and trust them to act responsibly.  If needed, you can roll
+back any egregious commits, but those are rare in practice.
+
+
+== How do I restrict read access to source code or downloads? ==
+  * Projects that we host must be open source, so there is no way to restrict access to those.
+
+
+== How do I prevent further user comments on a specific issue or wiki page? ==
+  * Label the issue `Restrict-AddIssueComment-Commit`, or
+  * Label the wiki page `Restrict-AddWikiComment-Commit`
+
+Whenever you limit comments on a specific page, you should point users
+to your mailing list or some other preferred way to give you feedback.
+
+If you wish to prevent all wiki comments on all wiki pages, you can
+disable that feature on the *Wiki* subtab of the *Administer* tab.
+
+
+
+<br>
+----
+
+= Reference =
+
+The following subsections explain in detail how our permission system works.
+
+
+
+== Project member duties ==
+
+It is very tempting to use permissions to try to express what a given
+member is supposed to be working on.  But, that is an incorrect usage
+of permissions, and it leads to frustration for everyone involved.
+Instead, it is better to trust most project members with broad
+permissions and simply describe their expected duties in plain
+language.
+
+Duties are plain text descriptions of what each project member is
+expected to do.  They are general types of responsibilities, not
+specific work items like issues.  Example duties are shown when you
+click to edit, but you are not limited to the examples, you are free
+to enter whatever makes sense for your project.  Each project member
+can edit his/her own duties, and project owners can edit any member's
+duties.
+
+
+== Roles and permissions ==
+
+Project members can be given one of three roles: Owner, Committer, or
+Contributor.  Users who are not members are also able to view project
+content, report issues, and leave comments.  Users who are not signed
+in are limited to viewing content only.
+
+Each of the three member roles includes standard permission to perform
+certain actions.  You can think of a permission as a key that opens a
+lock on certain page or action.  For example:
+
+|| *User's permissions* || *Needed permissions* ||  *Result* ||
+|| http://support.googlecode.com/svn/wiki/key.png !EditIssue || http://support.googlecode.com/svn/wiki/lock.png  !EditIssue ||   Access granted ||
+
+|| *User's permissions* || *Needed permissions* ||  *Result* ||
+|| None  ||  http://support.googlecode.com/svn/wiki/lock.png !EditIssue ||   Access denied ||
+
+
+
+|| *Permission* || *Description* || *Owner* || *Committer* || *Contributor* || *Non-Member* ||
+|| `View`            || View content                       || Yes || Yes     || Yes     || Yes ||
+|| `CreateIssue`     || Enter a new issue                  || Yes || Yes     || Yes     || Yes ||
+|| `AddIssueComment` || Add issue comment                  || Yes || Yes     || Yes     || Yes ||
+|| `AddWikiComment`  || Add wiki comment                   || Yes || Yes     || Yes     || Yes ||
+|| `EditWiki`        || Create, edit, or delete wiki pages || Yes || Yes     || Upgrade || No  ||
+|| `EditIssue`       || Edit issue attributes              || Yes || Yes     || Upgrade || No  ||
+|| `Commit`          || Commit source code changes         || Yes || Yes     || Upgrade  || No  ||
+|| `CreateDownload`  || Enter a new download               || Yes || Yes     || Upgrade  || No  ||
+|| `EditDownload`    || Edit download attributes           || Yes || Yes     || Upgrade || No  ||
+|| `DeleteDownload`  || Delete a download                  || Yes || Upgrade || Upgrade || No  ||
+|| `DeleteIssue`     || Soft-delete an issue               || Yes || Upgrade || Upgrade || No  ||
+|| `DeleteAny`       || Soft-delete anyone's comments      || Yes || Upgrade || Upgrade || No  ||
+|| `EditAnyDuties`   || Edit anyone's duties               || Yes || Upgrade || Upgrade || No  ||
+
+
+In addition, project owners may change project configuration options,
+and add or remove members.
+
+An individual member's permissions may be upgraded by checking a
+checkbox on his/her *People* page.  For example, a contributor might
+be permitted to edit issues, if one of their duties was to help triage
+new issue reports.
+
+The permissions of a member may be upgraded, but there is no way to
+downgrade by removing permissions that are inherent to his/her role.
+
+The standard permissions may be complimented by custom permissions.  A
+custom permission can enable a member to access content or perform
+operations that are restricted.  Custom permissions can be entered in the
+small text fields in the permissions section of the *People* page for
+any member.
+
+
+== Restriction labels ==
+
+Sometimes it is necessary to make an exception to what a user is
+permitted to do.  For example, non-members may generally be able to
+view all issues, but there may be a few issues with sensitive
+security-related information that should not be viewable.
+
+Rather than make exceptions that reduce the power of a user's
+permissions, you may add restrictions that require him/her to have
+even more permissions before being able to permform an action.  You
+can think of a restriction as adding more locks, each of which must be
+unlocked with the matching key.  The additional needed permissions can
+be any standard or custom permission.
+
+|| *User's permissions* || *Needed permissions* ||  *Result* ||
+|| http://support.googlecode.com/svn/wiki/key.png !EditIssue <br/> http://support.googlecode.com/svn/wiki/key.png  Commit || http://support.googlecode.com/svn/wiki/lock.png !EditIssue <br/> http://support.googlecode.com/svn/wiki/lock.png Commit ||   Request granted ||
+|| http://support.googlecode.com/svn/wiki/key.png Commit || http://support.googlecode.com/svn/wiki/lock.png !EditIssue <br/> http://support.googlecode.com/svn/wiki/lock.png Commit ||   Request denied ||
+|| http://support.googlecode.com/svn/wiki/key.png !EditIssue || http://support.googlecode.com/svn/wiki/lock.png !EditIssue <br/> http://support.googlecode.com/svn/wiki/lock.png Commit ||   Request denied ||
+|| None || http://support.googlecode.com/svn/wiki/lock.png !EditIssue <br/> http://support.googlecode.com/svn/wiki/lock.png Commit ||   Request denied ||
+
+
+Restrictions are specified using restriction labels that begin with
+the word `Restrict`, folowed by the name of an action, followed by the
+additional permission that users will need.  For example, the label
+`Restrict-EditIssue-Commit` could be placed on any issue, and it would
+mean that any user who wishes to edit the issue, must also have the
+`Commit` permission.  Another example: the label
+`Restrict-View-CoreTeam` would mean that only members with the
+`CoreTeam` custom permission would be allowed to view the issue.
+
+Restriction labels can be added to indivdual issues, downloads, and
+wiki pages.  Because any permission changes are rarely needed in open
+source software development, the label auto-complete menu does not
+list restriction labels until after you type the first letter, "r".
+
+Restriction labels are normal labels and can be used in the same way
+that normal labels can be used.  You can search for items that have
+specific restrictions, and display restrictions in a column on a list
+page.
+
+Although View restriction labels can be applied to wiki pages and downloads, those restrictions are not enforced completely.  The items are still shown in the list views.  The files can be downloaded by anyone.  Changes to them are included in the project updates page.  And, users can see the source of any wiki page in the source browsing tool. In fact, the only part that is enforced for wiki pages and downloads is access to the details page.  We chose to not enforce restrictions on these types of items because code.google.com is only aimed at hosting public open source projects, not private projects.
+
+Restriction labels do not apply to project owners.  That makes it
+impossible for project owners to accidentally lock themselves (and
+everyone else) out of performing some action.
+
+
+== Derived restrictions ==
+
+The sections above describe how permissions control the actions that
+members may perform, and how restrictions can be used to manually
+identify special cases.  The ability to manually identify special
+cases is useful and flexible, but it does not guarantee completeness.
+For example, it could be appropriate to restrict access to all issues
+that track defects in a password manager component.  Rather than type
+in restriction labels on each such issue, you can use filter rules to
+derive restrictions.
+
+Project owners may enter filter rules on the *Issue Tracker* subtab of
+the *Administer* tab.  Filter rules are basically if-then rules that
+look for certain labels on an issue and then add additional labels or
+other attributes.  To use filter rules with restriction labels, simply
+write a rule that adds a restriction label.  For example:
+
+|| *If the item has all these labels*  ||  *Then, add the following labels* ||
+|| Component-!PasswordManager Type-Defect || Restrict-View-!CoreTeam ||
+|| Security || Restrict-View-!CoreTeam ||

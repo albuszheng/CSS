@@ -1,0 +1,172 @@
+#summary Subversion FAQ
+
+=Subversion FAQ=
+
+<wiki:toc max_depth="2" />
+
+== What version of Subversion do you use? ==
+We currently use Subversion 1.6, made available via WebDAV. 
+
+Anonymous checkouts can be done via `http://`, while developers must use authenticated `https://` to commit changes.
+
+== How can I make SVN serve HTML and images with the correct Content-Type? ==
+You need to tell subversion what mime-type to use.  Just use the command:
+{{{
+svn propset svn:mime-type 'text/html' FILENAME
+}}}
+or
+{{{
+svn propset svn:mime-type 'image/jpeg' FILENAME
+}}}
+
+For more info:
+[http://svnbook.red-bean.com/en/1.4/svn.advanced.props.file-portability.html#svn.advanced.props.special.mime-type]
+
+It's also possible to configure your Subversion client to automatically set each file's mime-type. For example, by modifying ~/.subversion/config to resemble
+
+{{{
+[miscellany]
+enable-auto-props = yes
+
+[auto-props]
+*.html = svn:mime-type=text/html
+}}}  
+
+For more info:
+[http://svnbook.red-bean.com/en/1.1/ch07.html#svn-ch-7-sect-1.3.2]
+
+== How do I import my existing source code? ==
+Just use the 'svn import' command. Note that this command only loads a single tree of code into your repository.
+
+== How do I import an existing Subversion repository? ==
+To upload the history of an existing Subversion repository, use the svnsync tool that ships with Subversion 1.4 or later. Run svnsync help to read more about this tool.
+
+Note that your Google Code repository must be reset to revision 0 for this to work. Your project's Source tab will display instructions on how to reset the repository yourself. (Note: you must be a project owner to reset your own repository, and also to push code up with svnsync.)
+
+Here's a sample transcript that demonstrates how you can push history from an existing repository (located at `file:///my/repos`) to your repository on Google Code:
+
+{{{
+  $ svnsync init --username YOURUSERNAME https://YOURPROJECT.googlecode.com/svn file:///path/to/localrepos
+  Copied properties for revision 0.
+  $ svnsync sync --username YOURUSERNAME https://YOURPROJECT.googlecode.com/svn
+  Committed revision 1.
+  Copied properties for revision 1.
+  Committed revision 2.
+  Copied properties for revision 2.
+  [...]
+}}}
+
+When prompted for your password, use your googlecode.com password, which can be found on the [http://code.google.com/hosting/settings settings tab] of your profile page. 
+
+Running svnsync on a large repository will take a significant amount of time. If you are disconnected during the process, you may see the error message "svnsync: Couldn't get lock on destination repos after 10 attempts". If this happens, you can remove the lock yourself; see the "Locks" section of [http://svn.collab.net/repos/svn/trunk/notes/svnsync.txt svnsync.txt].
+
+== How do I download my Subversion history? ==
+To download the history of your Google Code repository, use the svnsync tool that ships with Subversion 1.4 or later. Run 'svnsync help' to read more about this tool. Note that your local repository must have an executable 'pre-revprop-change' hook script which allows revprop changes (or at least those of the form '`svnsync*`'.) Here's a sample transcript that demonstrates how you can pull history from your Google Code repository to a local repository: 
+
+{{{
+  $ svnadmin create localrepos
+  $ emacs localrepos/hooks/pre-revprop-change # make it 'exit 0'
+  $ chmod +x localrepos/hooks/pre-revprop-change
+  $ svnsync init --username USERNAME file:///path/to/localrepos https://myproject.googlecode.com/svn
+  Copied properties for revision 0.
+  $ svnsync sync --username USERNAME file:///path/to/localrepos
+  Committed revision 1.
+  Copied properties for revision 1.
+  Committed revision 2.
+  Copied properties for revision 2.
+  [...]
+}}}
+
+After you've done this once, you can continue to run the last 'svnsync sync' command to periodically pull down the latest commits and keep your local mirror up-to-date.
+
+== How much disk space can my repository use? ==
+We're offering plenty of space for storing source code under revision control. We start new projects with a 2GB quota. That's enough to host the vast majority of open source projects. We're also willing to work with projects that need more space.
+
+== Where do I get a copy of Subversion? ==
+Just visit the [http://subversion.apache.org/packages.html packages] page on [http://subversion.apache.org/].
+
+== Where can I get more info about using Subversion? ==
+You might want to read the [http://svnbook.red-bean.com/ Subversion Book].
+
+Forums/Community:
+  * http://subversion.wandisco.com/
+  * http://www.svnforum.org/
+
+== Can I use Microsoft Visual Studio with Google Code? ==
+Yes. There are a number of Windows clients for Subversion: you can use the command-line client, though TortoiseSVN is a very popular client that integrates Subversion functionality directly into Windows Explorer. Another possibility is to use [http://ankhsvn.tigris.org/ AnkhSVN], which is a Visual Studio plug-in that offers Subversion access within the IDE.
+
+== Can I set fine-grained path access controls in the Subversion repository? ==
+No. While corporate software projects tend to revolve around fine-grained access control to source code, we don't think that this is the most productive practice for open source development. In an open source project, the code is entirely public and the developer community should be based on trust. If your community invites someone to be a project member, then it's a collective statement that your community trusts the person with write access to the repository. If the community feels that the person should only change certain portions of the source code, then that expectation should be made clear. If the new member violates this social contract, the community is free to expel the member and revert any unwanted commits.
+
+== Where do I get a password for committing to Subversion? ==
+If you're a project owner or committer, just look at your "Settings" tab of your profile page. It will display your googlecode.com password. This password is used for access to your project's Subversion repository and for command-line file uploads to your project's Downloads area. This password is not the same as the password that you use to access your project on the web.
+
+== Why is my Subversion password different from my Google Account password? ==
+The default for many svn clients is to automatically cache the password on your local disk. Your Google Account password is much too valuable to expose in this manner. So while there is an inconvenience for users with clients that do not automatically cache the password, the risk it avoids in the other clients is worth it.
+
+== Why can't I set my own Subversion password? ==
+For the reasons mentioned above, we would prefer this password to be thought of in the same way as a temporary password sent via email. It has a similar level of security in that it is potentially accessible by third-parties as plain text. Allowing users to set their own password is likely to encourage them to divulge their Google Account or other high risk passwords.
+
+== How do I change my Subversion password? ==
+The "Settings" tab of your profile page has a button to automatically regenerate your googlecode.com password.
+
+== How do I check out code anonymously? ==
+You can use a Subversion client to check out a project's "trunk" code by requesting this URL:
+http://projectname.googlecode.com/svn/trunk
+
+== How do I check code into the repository? ==
+You can use the 'svn import' command, just as you'd do with any typical Subversion repository.
+
+== How can I reset the repository? ==
+If you're a project owner, you can click on the "reset this repository" link at the bottom of the "Source" tab's page.
+
+== How do I give new developers check-in privileges? ==
+If you're a project owner, just go to the project's "Administer" tab and add people as project members.
+
+== How do I take away check-in privileges of a developer who's no longer participating in the project? ==
+If you're a project owner, just go to the project's "Administer" tab and remove that person's project membership.
+
+== What does "use the fingerprint to validate the certificate manually" mean? ==
+If you get a message such as the following: 
+
+{{{
+  Error validating server certificate for 'https://projectname.googlecode.com:443':
+   - The certificate is not issued by a trusted authority. Use the
+     fingerprint to validate the certificate manually!
+}}}
+
+Google updates its server SSL certificates for 'googlecode.com'  fairly regularly, if only to renew the expiration dates.  This causes most Subversion clients (the openssl library, actually) to notice a new fingerprint and complain.  When you see the fingerprint "flip flopping", it means you're hitting different servers -- some which have the newer certificate, and some which haven't yet received it yet (and still have the old one.)  
+
+The proper long-term solution here isn't to trust a specific certificate, but rather trust the _certifying authority_ (CA) which signed the certificate, just like web browsers do.  This process is explained in detail over in [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.httpd.html#svn.serverconfig.httpd.authn.sslcerts the Subversion book].  In a nutshell:
+
+  * Try setting "ssl-trust-default-ca=true" in your client's "servers" file (in the "[global]" section).
+  * If that doesn't work (many systems simply don't have a default set of CAs to trust), then you can tell your client to just trust Google's CA anyway, by pointing it to a .pem file that you've downloaded:
+    * Download [http://www.geotrust.com/resources/extended-validation-ssl/certs/Equifax%20Secure%20Certificate%20Authority.crt this file] to local disk and call it 'google.pem'
+    * In the client's "servers" file in the "[global]" section, set "ssl-authority-files=google.pem"
+
+Once this is done, it doesn't matter how many different googlecode.com certificates your client sees -- as long as they're signed by the same trusted CA, the Subversion client will no longer complain.
+
+
+
+
+== Does Google own the code that I check into Subversion? ==
+Hosting your code on Google Code doesn't change ownership of the code in any way.
+
+== How do I set the cache headers for Subversion? ==
+
+Cache headers for a page hosted in Subversion can be controlled by setting the google-cache-control:max-age [http://svnbook.red-bean.com/nightly/en/svn-book.html#svn.ref.properties property]. Simply set the value of google-cache-control to the number of seconds that the item should be cached. The default
+is 60 seconds. To disable caching, set the property to 0.
+
+For gadgets, we still recommend using the [http://code.google.com/p/support/wiki/WorkingWithGoogleGadgets#Hosting_gadgets_on_Google_Code Gadget cache].
+
+== How do I use Subversion when behind a proxy? == 
+
+http://subversion.apache.org/faq.html#proxy
+
+== Why am I getting the error "Commit metadata is too large" when trying to commit to my repository? ==
+
+[http://en.wikipedia.org/wiki/Wikipedia:Too_long;_didn't_read TL;DR]: You're trying to commit many tens of thousands of files at once; break your commits up into smaller pieces.
+
+Google Code's Subversion service doesn't work like the Subversion service you might run on your own server. In particular, it is a distributed, replicated system. In order for your commit data to land successfully on many servers in several separate data centers in a timely way, we have to place an upper bound on the size of the metadata of your Subversion transaction (mostly, the number of paths it touches) that has to travel synchronously to several geographically diverse data centers.
+
+We're exploring ways to lift this limit. In the meantime, we've decided to trade off the convenience of making truly giant commits for some very good durability and consistency guarantees for your data.

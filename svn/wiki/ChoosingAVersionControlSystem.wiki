@@ -1,0 +1,22 @@
+#summary Deciding between Subversion and Mercurial when creating a project.
+
+=Deciding between Subversion and Mercurial/Git when creating a project.=
+
+When creating a new project on Google Code, you need to choose between Subversion, Mercurial, and Git as a version control system (VCS). There is no right answer to picking a VCS. They are all easy to use, have a large community behind them, and are used by popular projects. They have demonstrated themselves fit for their purpose. It is therefore likely that your project will be productive regardless of your choice. Typically, most projects pick a VCS based on their team members' preference and the team's perceived workflow.
+
+== Subversion ==
+
+Subversion is a well-known centralized VCS and the most widely used VCS for open source projects.
+  * The largest benefit of using Subversion is that it's familiar to most developers, so they can start contributing to projects immediately without having to figure out a new VCS.
+  * Subversion can scale to support larger projects, but it works especially well for small/medium sized projects.
+  * Subversion also works well for teams where most software contributions are expected from other team members. Unlike distributed version control systems (DVCS), however, team members cannot make check-ins when they are offline.
+
+For more information on Subversion, you might start with the free online [http://svnbook.red-bean.com Subversion book].
+
+== Mercurial/Git ==
+
+Mercurial and Git, like Bazaar, are Distributed Version Control Systems (DVCS) that enables developers to work offline and define more complex workflows such as peer-to-peer pushing/pulling of code.
+  * DVCS makes it easier for outside contributors to contribute to projects, as cloning and merging of remote repositories is very easy.
+  * Large projects with multiple developers and external contributors benefit the most from DVCS because of the ease of branching and tagging. Smaller projects typically only experience the benefit of being able to work offline.
+
+For a great (and fun) tutorial on Mercurial, take a look at [http://hginit.com]. For Git, try [http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html].

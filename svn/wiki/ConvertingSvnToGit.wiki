@@ -1,0 +1,98 @@
+#summary Moving a project from using Subversion for code hosting to Git
+#labels git
+
+= Convert your project from Subversion to Git =
+
+Follow the following instructions to switch your project from Subversion to Git: 
+
+  # Go to your existing open source project, choose the Administer tab, and then choose the Source sub-tab.
+  # Change the repository type to Git
+  # Import your code into the Git code repository as described in the 'How to Convert Subversion History to Git' section below
+  # In the same manner you imported your code, import your wiki into the Git wiki repository. Make sure to use the path of the wiki in your subversion repository (e.g. http://projectname.googlecode.com/svn/wiki) and the Hg wiki repository (http://code.google.com/p/projectname.wiki/)
+
+Your old Subversion project will still be accessible after you switch your
+project to using Git, so you will not need to back up your repository before
+switching. Your Subversion repository will remain accessible at:
+https://projectname.googlecode.com/svn/
+
+Until you convert your old Subversion data to Git, your new repository and wiki
+will appear empty. (Don't worry, your old Subversion data is still there, and
+you can always switch back.)
+
+= How to Convert Subversion History to Git =
+
+For both of these options, make sure you know your project's clone URL and familiarize yourself with the clone instructions on your project's Source Checkout page. You can get to this page by clicking the "Source" tab, or go directly to https://code.google.com/p/projectname/source/checkout
+
+You won't be using the `git clone` instructions exactly for this procedure, but you should be using that URL and username/password info.
+
+== Option 1:  Top-Skimming ==
+
+If you don't care about your project's history, then you can simply "top skim"
+the latest trunk code or wiki from Subversion and put it into Git.  Assuming
+your googlecode Git repository is empty, it's as easy as:
+
+{{{
+  $ git clone https://code.google.com/p/projectname
+  $ cd projectname
+  $ svn export --force http://projectname.googlecode.com/svn/trunk .
+  $ git add .
+  $ git commit -m "Initial import of source."
+  $ git push origin master
+}}}
+
+To convert your wiki:
+{{{
+  $ git clone https://code.google.com/p/projectname.wiki
+  $ cd projectname.wiki
+  $ svn export --force http://projectname.googlecode.com/svn/wiki .
+  $ git add .
+  $ git commit -m "Initial import of wiki."
+  $ git push origin master
+}}}
+
+== Option 2:  Full History Conversion ==
+
+If want to migrate your whole history, the process is much more involved. We
+will use a tool called `git-svn`, which is included in standard Git
+distributions.
+
+The steps below work best if you use the standard Google Code Subversion
+project layout, with `/trunk`, `/branches`, `/tags`, and `/wiki` directories.
+
+`git-svn` is a powerful tool that is capable of much more than the simple
+history conversion we will go through here. For more information, see the
+[http://www.kernel.org/pub/software/scm/git/docs/git-svn.html full documentation].
+
+Converting your history can be as simple as cloning the Subversion repo using
+the `svn` remote helper:
+
+{{{
+  $ git svn clone --stdlayout https://projectname.googlecode.com/svn projectname
+  $ cd projectname
+  $ git remote add googlecode https://code.google.com/p/projectname
+  $ git push --all googlecode
+}}}
+
+If your project has tags, you should also push those. The following will create a
+simple tag for every tag in the Subversion repo. If you want to create
+_annotated_ tags, the procedure can be more complicated; see
+http://gitready.com/advanced/2009/02/16/convert-git-svn-tag-branches-to-real-tags.html
+for a brief example.
+
+{{{
+  $ git push googlecode refs/remotes/tags/*:refs/tags/*
+}}}
+
+To convert your wiki history, use a similar approach (note the `.wiki` suffix):
+
+{{{
+  $ git svn clone https://projectname.googlecode.com/svn/wiki projectname.wiki
+  $ cd projectname.wiki
+  $ git remote add googlecode https://code.google.com/p/projectname.wiki
+  $ git push --all googlecode
+}}}
+
+You're done! If you look at your project's Source or Wiki tabs, you should
+see your converted repository history.
+
+If you have trouble, feel free to contact google-code-hosting@googlegroups.com

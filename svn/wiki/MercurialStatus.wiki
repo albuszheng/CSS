@@ -1,0 +1,18 @@
+#summary Tracking the status of the Mercurial feature on Google Code.
+#labels Mercurial
+
+= Mercurial Status = 
+
+Based on Mercurial 2.0. 
+
+== What Doesn't Yet Work ==
+
+  * No branch reviews - issue 2514
+  * Wire protocol enhancements to avoid too-long request lines (issue 3887)
+  * Wire protocol enhancements to reduce requests
+
+For the most up-to-date list, see [http://code.google.com/p/support/issues/list?can=2&q=component%3AMercurial the complete list of open Mercurial issues].
+
+== Getting Started ==
+
+See ConvertingSvnToHg.

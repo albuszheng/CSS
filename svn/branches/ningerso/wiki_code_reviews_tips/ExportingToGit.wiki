@@ -1,0 +1,77 @@
+#summary Exporting a project to a Git repository
+
+= Introduction =
+
+Git is a version control system that lets you:
+  * Work offline.
+  * Browse history locally.
+  * Serve your version of the project.
+  * Branch and merge cheaply.
+and more. Git tutorials abound all over the internet, but while I'm here, let me plug [http://cs.stanford.edu/~blynn/gitmagic/ my own Git tutorial]!
+
+Google Code natively speaks Subversion, but you can easily use Git during development.
+We focus on importing a complete Git repository from a Google Code project organized in the recommended fashion. The [http://www.kernel.org/pub/software/scm/git/docs/git-svn.html git-svn manpage] thoroughly describes how to handle other cases such as nonstandard layouts, importing only a few revisions, sharing exported repositories, and so on.
+
+== 1. Import ==
+
+First perform the equivalent of a `svn checkout`. In an empty subdirectory, run:
+{{{
+ $ git svn clone --username your-name -s https://your-project.googlecode.com/svn
+   # older versions of git: replace "-s" with "-Ttrunk -bbranches -ttags"
+}}}
+Like a Subversion checkout, you now have a local copy of your project. Unlike a Subversion checkout, you also have a local copy of the entire history of the project. Try:
+{{{
+ $ git log          # print summary of history
+ $ git diff HEAD^^  # diff against two revisions ago
+ $ gitk             # graphical history browser
+ $ qgit             # Qt-based history browser
+}}}
+These read from local disk, and work even when you're offline.
+
+== 2. Develop ==
+
+You now have a fully fledged version control system at your fingertips. You can checkpoint locally. You can create, merge, and destroy branches cheaply. You can checkout long-lost ancient code. You can stockpile and reorganize your commits.
+
+Any Git tutorial teaches these abilities. We'll content ourselves with simple examples.
+
+First, the basics. Edit code as usual, but if you add or remove files, type:
+{{{
+ $ git add FILENAME...
+}}}
+or
+{{{
+ $ git rm FILENAME...
+}}}
+There's no need to inform Subversion as `git-svn` will do so later. In fact, we only talk to Subversion via `git-svn`, and never run pure `svn` commands.
+
+The only other git command you must know is:
+{{{
+ $ git commit -a
+}}}
+which saves the current state of your project locally. You can see them with `git log`. Commit early and commit often!
+
+Now for a couple of tricks. Let's say you've made several commits and suppose you want to undo the last one:
+{{{
+ $ git reset --hard HEAD^
+}}}
+Or suppose you want to get a certain file from five commits ago:
+{{{
+ $ git checkout HEAD~5 foo.c
+}}}
+We've barely scratched the surface. There are countless other features worth learning, particularly Git's extraordinary lightweight branches.
+
+=== 3. Update ===
+
+Periodically, you should get online and fetch the latest changes from Google Code with:
+{{{
+ $ git svn rebase   # think "svn update"
+}}}
+=== 4. Export ===
+
+Submit your commits to Google Code with:
+{{{
+ $ git svn dcommit  # think "svn commit"
+}}}
+This converts each of your Git commits into Subversion commits and uploads them, provided your repository is up-to-date. To keep working, go back to step 2.
+
+_The content on this page created by Google is licensed under the [http://creativecommons.org/licenses/by/3.0/ Creative Commons Attribution 3.0 License].  User-generated content is not included in this license._

@@ -1,0 +1,63 @@
+#summary How to add comments by email.
+=Inbound Email =
+
+Google Project Hosting allows you to add comments to an issue, wiki page, or code review by replying to one of the notification emails that we send out.  This feature allows you to respond to other developers more quickly and easily because you don't need to leave your email client.
+
+<wiki:toc max_depth="2" />
+
+== Can I add comments by email? ==
+
+Yes.  If you receive an email notification of a issue change, check the footer to see if it says that you can reply to add a comment.  If so, then reply to the email and your message will be added to the issue as a new comment. It is also possible to reply to wiki comments and code review comments via email.
+
+== Can I update an issue by email? ==
+
+Yes.  Start your email reply message with one or more lines of the form:
+{{{
+summary: new issue summary
+owner: new-owner@example.com
+status: new-status-value
+labels: add-this-label, -remove-this-label
+}}}
+
+Note that the leading dash is used to remove an existing label.
+
+Any line that does not match the format of one of those lines will be treated as the beginning of a plain-text comment.
+
+== Can I include quoted lines in my email reply? ==
+
+Yes, but they normally will not be displayed. We strip out quoted lines and text that looks like email signatures before adding the body of the email message as a new comment.  The reason is that each comment is displayed in the context of a page that already contains the preceding comments, so there is usually no need to quote lines.  However, whenever a comment was made via email, we offer a link to display the original email message body with nothing stripped out.
+
+== How do you prevent spam emails from getting into my project? ==
+
+
+At this time, we only accept email replies to email notifications that were sent out by our servers.  Each outgoing notification email has a unique Message-ID header that must be cited in the In-Reply-To field of the email reply.  Spammers can and do send us thousands of spam email messages every day, but none of them are processed by our servers because they are not valid replies to messages that we sent. 
+
+== My project sends all email notifications through a mailing list.  Can I reply to those emails? ==
+
+Replying to the mailing list will simply add a message to the mailing list, not to the issue tracker, wiki page, or code review on our servers.  We only process replies to notification emails that we sent directly to an individual user.  If you are not sure if you can reply or not, check the notification email footer to see if it says that you can reply.
+
+== I got an error message email saying that my message was not a reply.  Why? ==
+
+The most common problem is that you received the email at one email address and then replied to it using a different From address.  If you are using gmail, you can add multiple email addresses to your gmail account and then choose which one to send the reply from.  It will default to sending the reply from the same address that received the notification message.
+
+== Can I use rich formatting or HTML emails? ==
+
+We only process the plain text part of the email message.  Most email clients that allow rich text formatting also include a plain text version of the same text in each message.
+
+== Can I add attachments? ==
+
+At this time, we do not process attachments.
+
+== Can I create a new issue via email? ==
+
+
+At this time, we only process email replies.  
+
+== Can I completely disable email processing in my project? ==
+
+
+Yes, a project owner can disable email processing for that project.  The checkbox for that is under the Administer tab.   
+
+== Can I reply to a "noreply" address? ==
+
+No. Only projects that send email notifications from projectname@googlecode.com can process email.  Projects that are still sending email from codesite-noreply@google.com must opt in to using a project-specific From: address before email replies can be processed.  Emails already sent from the “noreply” address cannot be replied to.

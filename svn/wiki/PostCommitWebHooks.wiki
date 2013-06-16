@@ -1,0 +1,119 @@
+#summary How to use Post-Commit Web Hooks for your project.
+
+=Post-Commit Web Hooks=
+
+<wiki:toc max_depth="2"/>
+
+----
+
+==Overview==
+Post-Commit Web Hooks allow projects to setup web services that receive project commit notifications from Google Code. Such services could be used to integrate external tools including continuous build systems, bug trackers, project metrics, and social networks.
+
+
+==Details==
+
+Project owners may enable this feature by specifying a target URL in the Administer/Source tab. If the URL contains the special patterns "%p" and "%r", those will be automatically replaced for each commit with the project name and comma-separated list of revisions, respectively.
+
+The POST request payload describes the commit using the [http://webhooks.pbwiki.com/ Web Hooks] model, and consists of a UTF8-encoded [http://www.json.org/ JSON] dictionary in the following format:
+
+<pre>
+{
+  "project_name": "atlas-build-tool",
+  "repository_path": "http://atlas-build-tool.googlecode.com/svn/",
+  "revision_count": 1,
+  "revisions": [
+    { "revision": 33,
+      "url": "http://atlas-build-tool.googlecode.com/svn-history/r33/",
+      "author": "mparent61",
+      "timestamp":   1229470699,
+      "message": "working on easy_install",
+      "path_count": 4,
+      "added": ["/trunk/atlas_main.py"],
+      "modified": ["/trunk/Makefile", "/trunk/constants.py"],
+      "removed": ["/trunk/atlas.py"]
+    }
+  ]
+}
+</pre>
+
+While we will make a best effort to promptly deliver all Post-Commit Web Hook notifications, messages are not guaranteed to be delivered, may arrive multiple times, and may not arrive in order of commit. All requests have a 15 second timeout. If we fail to reach the specified URL, we will retry several times over a 24 hour period. This allows your services to be down for short maintenance windows and still receive all messages. 
+
+Web services should respond to the POST request with a 2XX response code to indicate successful delivery. Redirects (3XX response codes) are not followed, and no further delivery attempts will be made. All other response codes, as well as request timeouts, are treated as failures and will be retried.
+
+Note: Notifications for commits via the 'svnsync' command are not yet supported.
+
+==Notification Format==
+
+The payload's [http://www.json.org/ JSON] dictionary contains the following items:
+
+|| *Field* || *Type* || *Description* ||
+|| project_name ||String|| The name of the project. ||
+|| repository_path ||String|| The project's repository URL.||
+|| revision_count ||Number|| Number of revisions contained in the 'revisions' list.||
+|| revisions ||List|| A list of dictionaries describing 1 or more repository commits (see table below).||
+
+Each revision contained in the 'revisions' list is a dictionary with the following items:
+
+|| *Field* || *Type* || *Description* ||
+||revision|| Number(SVN) / String(Hg) || Repository identifier for this commit.||
+||url||String||URL to browse repository history for this revision.||
+||author|| String || Username responsible for commit.||
+||timestamp|| Number ||Repository commit timestamp.||
+||message||String||Commit log message.||
+||path_count||Number||Total number of paths modified in this revision. Only a fixed number of paths will be included per revision, so this number is used to determine whether a partial list was sent.||
+||added||List||A list of String paths added by this revision.||
+||modified||List||A list of String paths modified by this revision.||
+||removed||List||A list of String paths removed by this revision.||
+
+It is important to note that a revision's list of changed paths will be truncated for large commits in order to limit message sizes. Full commit information can be obtained using standard repository tools.
+
+====Example: Processing a notification using a Python [http://code.google.com/appengine/ AppEngine] service====
+<pre>
+import logging
+from django.utils import simplejson
+from google.appengine import webapp
+class Listener(webapp.!RequestHandler):
+  def post(self):
+    payload = simplejson.loads(self.request.body)
+    for revision in payload["revisions"]:
+      logging.info("Project %s, revision %s contains %s paths",
+                   payload["project_name"],
+                   revision["revision"],
+                   revision["path_count"])
+</pre>
+
+
+==Authentication==
+
+Post-Commit Web Hooks use [http://en.wikipedia.org/wiki/HMAC HMAC-MD5] to authenticate requests.
+Every project has a unique post-commit 'secret key', visible to project owners in the Administer/Source tab. This key is used to seed the HMAC-MD5 algorithm.
+Each POST request header contains a HMAC used to authenticate the payload. This value is a 32-character hexadecimal string contained in the 'Google-Code-Project-Hosting-Hook-Hmac' header. 
+By combining your project's secret key and the POST request's HMAC value, you can authenticate the request.
+
+====Example: Authentication using a Python [http://code.google.com/appengine/ AppEngine] service====
+<pre>
+import hmac
+import logging
+from google.appengine import webapp
+class Listener(webapp.!RequestHandler):
+  def post(self):
+    project_secret_key = "0123456789abcdef"  # From Administer/Source tab
+    m = hmac.new(project_secret_key)
+    m.update(self.request.body)
+    digest = m.hexdigest()
+    if digest == self.request.headers["Google-Code-Project-Hosting-Hook-Hmac"]:
+      print "Authenticated"
+    else:
+      print "Authentication failed!"
+</pre>
+
+==Continuous Integration with Hudson==
+
+<a href="http://hudson.dev.java.net/">Hudson</a>, a continuous integration system, can be used to automate the build for <a href="http://wiki.hudson-ci.org/display/HUDSON/Use+Hudson">Java projects</a> (among <a href="http://www.nabble.com/how-are-you-using-Hudson-for-non-Java-projects--tt17145574.html">others</a> such as <a href="http://redsolo.blogspot.com/2008/04/guide-to-building-net-projects-using.html">.NET projects</a>). Projects built with <a href="https://hudson.dev.java.net/">Hudson</a> can be triggered using Google Code's Post-Commit Web Hooks. 
+
+After <a href="https://hudson.dev.java.net">Hudson</a> has been setup, builds can be triggered on every commit by using the following url on your Hudson host as the Post-Commit URL:
+<pre>
+http://YOURHOST/hudson/job/PROJECTNAME/build
+</pre>
+
+For more information, refer to the <a href="http://wiki.hudson-ci.org/display/HUDSON/Building+a+software+project#Buildingasoftwareproject-Configuringautomaticbuilds">Hudson documentation</a>.

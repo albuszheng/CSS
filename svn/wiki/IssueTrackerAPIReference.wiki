@@ -1,0 +1,494 @@
+#summary Issue Tracker Data API Reference Guide
+
+
+=<font color="red">Deprecated</font>=
+<font color="red">*The Issue Tracker Data API has been deprecated and will be shut down on June 14, 2013*
+
+*See http://googleblog.blogspot.com/2012/12/winter-cleaning.html *</font>
+
+-----
+
+This document provides detailed reference documentation for the raw protocol (XML and HTTP) for the Issue Tracker Data API.
+
+This document doesn't contain information about the programming-language client libraries. For client-library reference information, see the links from the programming-language-specific sections of the developer's guide.
+
+= Audience =
+
+This document is intended for programmers who want to write client applications that can interact with Project Hosting on Google Code's Issue Tracker.
+
+It's a reference document; it assumes that you understand the concepts presented in the [IssueTrackerAPI developer's guide], and the general ideas behind the <a href="http://code.google.com/apis/gdata/basics.html">Google Data APIs protocol</a>.
+
+= Issue Tracker Data API feed types =
+
+Issue Tracker Data API provides a variety of representations of issue data. The Issue Tracker Data API provides two types of feeds: the Issues and !IssueComments feed. 
+
+The Issues feed allows you to get a list of issues that match a certain criteria. To get all the issue for in an issue tracker, replace the PROJECT_NAME  with your project's name in the url below:
+
+{{{
+https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/full
+}}}
+
+The !IssueComments feed allows you to get the issue comments for a specified issue. To get the issue comments for an issue, replace PROJECT_NAME with your project name and ISSUE_ID with a valid issue id number in the url below.
+
+{{{
+https://code.google.com/feeds/issues/p/PROJECT_NAME/issues/ISSUE_ID/comments/full
+}}}
+
+<h2 id="Parameters">Project Hosting on Google Code query parameters reference</h2>
+
+The Issue Tracker Data API supports the following standard <a href="http://code.google.com/apis/gdata/reference.html#Queries">Google Data API query parameters for the Issue feed</a>:
+
+<table border=1 cellspacing=0>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Support</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>max-results</td>
+      <td>Issues, !IssueComments</td>
+    </tr>
+    <tr>
+      <td>prettyprint</td>
+      <td>Issues, !IssueComments</td>
+    </tr>
+    <tr>
+      <td>start-index</td>
+      <td>Issues, !IssueComments</td>
+    </tr>
+    <tr>
+      <td>published-max</td>
+      <td>Issues</td>
+    </tr>
+    <tr>
+      <td>published-min</td>
+      <td>Issues</td>
+    </tr>
+    <tr>
+      <td>updated-max</td>
+      <td>Issues</td>
+    </tr>
+    <tr>
+      <td>updated-min</td>
+      <td>Issues</td>
+    </tr>
+    <tr>
+      <td>q</td>
+      <td>Issues</td>
+    </tr>
+    <tr>
+      <td>alt</td>
+      <td>Issues</td>
+    </tr>
+  </tbody>
+</table>
+
+Issue Tracker Data API does not support the category, author, and strict parameters. 
+
+In addition to the standard Google Data API query parameters, the Issue Tracker Data API supports the following parameters:
+
+<table border=1 cellspacing=0>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>author</td>
+      <td>Return issues based on who reported the issue. For Gmail users, this will be part of the email preceding the '@' sign.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>can</td>
+      <td>Return issues based on a canned query identifier.</td>
+      <td> 
+  <ul>
+    <li>'All issues' <b>all</b></li>
+    <li>'Open issues' <b>open</b></li>
+    <li>'Open and owned by me' <b>owned</b></li>
+    <li>'Open and reported by me' <b>reported</b></li>
+    <li>'Open and starred by me'<b>starred</b></li>
+    <li>'New issues' <b>new</b></li>
+    <li>'Issues to verify' <b>to-verify</b></li>
+  </ul>
+</td>
+    </tr>
+    <tr>
+      <td>id</td>
+      <td>The issue to return based on the issue id.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>label</td>
+      <td>The type of issues to return based on the label set on the issue</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>owner</td>
+      <td>Return issues based on the owner of the issue. For Gmail users, this will be the part of the email preceding the '@' sign.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>status</td>
+      <td>Return issues based on the status of the issue.</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table> 
+
+ 
+= Issue Tracker elements reference =
+
+In addition to the standard Data API elements, the Issue Tacker Data API uses the following elements in the *issues* namespace.
+
+For information about the standard Google Data API elements, see the Atom specification and the <a href="http://code.google.com/apis/gdata/elements.html">Kinds document</a>.
+
+
+==issues namespace element reference==
+
+<h4>cc</h4>
+
+Entry in the issue cc list.
+
+The <b>cc</b> element can appear only as a child of <b>!IssuesEntry</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>Uri? (zero or one)</td>
+    <td>issues:uri</td>
+    <td>uri</td>
+  </tr>
+  <tr>
+    <td>Username (one)</td>
+    <td>issues:username</td>
+    <td>username</td>
+  </tr>
+</tbody></table>
+
+<h5>Example</h5>
+{{{
+<issues:cc>
+	<issues:uri>/u/fitzwilliam.darcy/</issues:uri>
+	<issues:username>fitzwilliam.darcy</issues:username>
+</issues:cc>
+}}}
+
+<h4>ccUpdate</h4>
+
+Issue cc update
+
+The <b>ccUpdate</b> element can appear only as a child of <b>Updates</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>string? (zero or one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+</tbody></table>
+
+<h5>Example</h5>
+{{{
+<issues:ccUpdate>fitzwilliam.darcy</issues:ccUpdate>
+}}}
+
+<h4>label</h4>
+
+Issue label.
+
+The <b>label</b> element can appear only as a child of <b>!IssuesEntry</b> and <b>Updates</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>string (one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:label>ThisIsFun</issues:label>
+}}}
+
+<h4>owner</h4>
+
+Issue owner.
+
+The <b>owner</b> element can appear only as a child of <b>!IssuesEntry</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>Uri? (zero or one)</td>
+    <td>issues:uri</td>
+    <td>uri</td>
+  </tr>
+  <tr>
+    <td>Username (one)</td>
+    <td>issues:username</td>
+    <td>username</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:owner>
+	<issues:uri>/u/fitzwilliam.darcy/</issues:uri>
+	<issues:username>fitzwilliam.darcy</issues:username>
+</issues:owner>
+}}}
+
+<h4>ownerUpdate</h4>
+
+Issue owner update.
+
+The <b>ownerUpdate</b> element can appear only as a child of <b>Updates</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>string? (zero or one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:ownerUpdate>fitzwilliam.darcy</issues:ownerUpdate>
+}}}
+<h4>stars</h4>
+
+Issue star count.
+
+The <b>stars</b> element can appear only as a child of <b>!IssuesEntry</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>non-negative integer (one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:stars>0</issues:stars>
+}}}
+
+<h4>state</h4>
+
+Whether the issue is open or closed.
+
+The <b>state</b> element can appear only as a child of <b>!IssuesEntry</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>enum string (one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:state>open</issues:state>
+}}}
+
+<h4>status</h4>
+
+Issue status
+
+The <b>status</b> element can appear only as a child of <b>!IssuesEntry</b> and <b>Updates</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>string (one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:status>Accepted</issues:status>
+}}}
+
+<h4>summary</h4>
+
+Issue summary.
+
+The <b>summary</b> element can appear only as a child of <b>Updates</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>string (one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:summary>Summary of issue</issues:summary>
+}}}
+
+<h4>Updates</h4>
+
+List of metadata updates.
+
+The <b>updates</b> element can appear only as a child of <b>!IssueCommentsEntry</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>ccUpdate* (zero or more)</td>
+    <td>issues:ccUpdate</td>
+    <td>cc updates</td>
+  </tr>
+  <tr>
+    <td>Label* (zero or more)</td>
+    <td>issues:label</td>
+    <td>labels</td>
+  </tr>
+  <tr>
+    <td>!OwnerUpdate? (zero or one)</td>
+    <td>issues:ownerUpdate</td>
+    <td>owner updates</td>
+  </tr>
+  <tr>
+    <td>Status? (zero or one)</td>
+    <td>issues:status</td>
+    <td>status</td>
+  </tr>
+  <tr>
+    <td>Summary? (zero or one)</td>
+    <td>issues:summary</td>
+    <td>summary</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:updates>
+	<issues:ccUpdate>fitzwilliam.darcy</issues:ccUpdate>
+	<issues:label>-Type-Defect</issues:label>
+	<issues:label>-Priority-High</issues:label>
+	<issues:label>Type-Task</issues:label>
+	<issues:label>Priority-Medium</issues:label>
+	<issues:ownerUpdate>elizabeth.bennet</issues:ownerUpdate>
+	<issues:status>Accepted</issues:status>
+	<issues:summary>anothersmoketest</issues:summary>
+</issues:updates>
+}}}
+
+<h4>uri</h4>
+
+Describes the URI associated with a user.
+
+The <b>uri</b> element can appear only as a child of <b>Cc</b> and <b>Owner</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>string? (zero or one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:uri>/u/fitzwilliam.darcy/</issues:uri>
+}}}
+
+<h4>username</h4>
+
+Username of a user.
+
+The <b>username</b> element can appear only as a child of <b>Cc</b> and <b>Owner</b>.
+<h5>Properties</h5>
+<table border=1 cellspacing=0>
+  <tbody><tr>
+    <th>Property</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>string? (zero or one)</td>
+    <td>text()</td>
+    <td>value</td>
+  </tr>
+  </tbody>
+</table>
+
+<h5>Example</h5>
+{{{
+<issues:username>fitzwilliam.darcy</issues:username>
+}}}

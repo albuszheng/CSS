@@ -1,0 +1,431 @@
+#summary Project Hosting on Google Code FAQ
+#labels Featured
+
+<wiki:toc max_depth="2"/>
+
+----
+
+== Getting Started ==
+
+=== What's the new project-hosting service on Google Code? ===
+Our new hosting service offers a collaborative development environment that includes: 
+  * Project workspaces with simple membership controls 
+  * Version control via Subversion
+  * Source code browsing and reviews
+  * Issue tracking 
+  * Wiki pages
+  * Downloads
+  * Mailing lists at groups.google.com
+
+=== Who's the service for? ===
+All open source developers. If you plan to start an open source project, we encourage you to create a project on Google Code.
+
+=== Why is Google offering to host open source projects? ===
+One of our goals is to encourage healthy, productive open source communities. Developers can always benefit from more choices in project hosting.
+
+=== Is hosting on Google Code available internationally? ===
+For now, project hosting is available only in English. Open source projects can be created by developers from all countries, with a few small exceptions.
+
+=== Will Google Code be localized into my language? ===
+We plan to localize Google Code as it matures.
+
+=== Is Google Code's implementation itself open source? ===
+As with most project-hosting sites, our underlying technology is a mixture of open source and proprietary code. For example, the issue tracker is entirely written by Google, but the version-control service is based on Subversion, a popular open source tool.
+
+=== Where's the documentation for the project-hosting service? ===
+Much of it's right here in this FAQ. Also, most project and issue tracker pages contain self-documenting fields that describe the purpose of the page. For documentation on how to use a [http://subversion.tigris.org/ Subversion] client, just visit the Subversion project.
+
+=== How is this project-hosting service related to Summer of Code? ===
+Both are part of our larger initiative to support and encourage the development of open source software. Google Summer of Code projects may also be hosted on Google Code, should the student or mentor so wish.
+
+----
+
+== Hosting Your Open Source Project on Google Code ==
+
+=== Why would I want to host my open source project on Google Code? ===
+Our project-hosting service is simple, fast, reliable, and scalable, so that you can focus on your own open source development.
+
+=== Why would I not want to host my open source project on Google Code? ===
+Google Code will have lots of key features at launch, but we may not have all features you want or need for your project. Rather than try to offer every possible feature, we have focused on doing the most important things really well. More features will be added over time, but only when they are ready. However, we will not offer the following any time soon: shell accounts, build farm, private projects, nested projects, or multiple alternatives for each type of hosted tool.
+
+=== Are there any restrictions on who can use the site? ===
+Just a couple. You'll need to be in a country where Google is able to conduct business, and your project needs to be open source.
+
+=== Do I need to have a Gmail account to start a project? ===
+No, a Gmail account is no longer required to create a project, though you will need a Google Account. If you don't have a Google Account already, you can [http://www.google.com/accounts/NewAccount?continue=http://code.google.com/hosting/faq.html create one now].
+
+=== Do I need to have a Gmail account to participate in a project? ===
+No authentication is required to browse project pages or issues, or to check out source code. To create or comment on an issue, though, you'll need to be logged in to your Google Account. To manage issue metadata or commit to a project's Subversion repository, you'll need to be logged in to your Google Account and either be a "project owner" or a "project member."
+
+=== Are you going to put ads on my project page? ===
+No. Ads aren't part of Google Code at this time.
+
+=== Can I put ads on my project's pages? ===
+This may be an option in the future, but, no, not for now.
+
+=== How long does it take for my project to be approved for hosting? ===
+As soon as you create a project, it's available for use.
+
+=== Can I use Google Code to host projects that aren't open source? ===
+Nope. Open source projects only.
+
+=== Why open source projects only? ===
+Most proprietary software projects have funding, and can therefore afford to pay for commercially offered development tools and environments. The goal of hosting on Google Code is to promote healthy open source development by offering hosted tools that most open source projects can't afford.
+
+=== What should I do if somebody took my project's name? ===
+We rely on the goodwill of open source participants to ensure they are the rightful owner or creator of a project name. If you feel that someone has intentionally created a project that uses your existing project's name, please email us at code-hosting@google.com.
+
+=== How do I create a project? ===
+A good project starts with a good idea: one that addresses a real need, is feasible and well-scoped, and isn't well covered by existing open source projects. (Before you create a new project, we suggest that you try searching for existing projects on this site and elsewhere on the web. You can often get further faster by helping out with an existing project than by starting one from scratch.) 
+
+If you're ready to start your own project, you'll need to write a description of it and give it a good name. Then, sign in using a Google account, enter that information into the Create a project page, and you're done. Congrats. You've got a brand-new project on Google Code.
+
+=== How do I join a project? ===
+One of the project owners must use the project administration page to add your Google account email address to the project.
+
+Most projects have mailing lists that the developers use to discuss the project. To become a developer, first participate on the mailing list by showing your interest in the project and your ability to help the project. Then, ask the project owners to make you a member of the project.
+
+----
+
+== Hosted Tools ==
+
+=== Which web browsers are compatible with Google Code? ===
+At this time, we've tested compatibility with Mozilla Firefox 1.0.4 and 1.5, Safari, and Microsoft Internet Explorer 6.0 and 7.0 beta 3.
+
+=== Why do you only offer a small set of licenses? ===
+The open source community has been flooded with lots of nearly identical licenses. We'd like to see projects standardize on the most popular, time-tested ones. The selected licenses offer diversity to meet most developer needs.
+
+=== How can I select a license other than the ones provided? ===
+At this time, we offer only the licenses listed.
+
+=== How can I choose two licenses for my dual-licensed project? ===
+At this time, we offer single licenses only.
+
+=== Is my data safe? ===
+Yes. Your data is hosted on Google's infrastructure in Google's datacenters, ensuring a high level of reliability and redundancy.
+
+=== How do I get a copy of my data? ===
+At this time, there aren't any import or export features. But look for them as the service matures.
+
+=== How do I create web pages for my project? ===
+You can use [http://pages.google.com/ Google Page Creator] to create web pages, and then create a link to them from your project's front page. [http://www.writely.com/ Google's Writely] is another great way to collaboratively create documents and publish them on the web. Or, link from your project to any existing web pages.
+
+=== Can I use another hosting service for parts of my project? ===
+Yes. If Google Code doesn't have all the tools you need, feel free to start with Google Code and use a combination of tools from this site and others. Use hyperlinks on your project summary page to guide your users to these other resources.
+
+=== Why can't I keep deleting and re-uploading a project download? ==
+
+You can delete files from the download section if you accidentally uploaded the wrong file or the file is corrupted.  You need to notice this problem fairly quickly, before too much time has passed or too many people have downloaded the file.
+
+After a file has been released for some time, it becomes part of your project's history and can no longer be deleted.  Offering [http://google-opensource.blogspot.com/2008/05/best-practices-archival-downloads.html archival downloads] means that users can trust that the file will always be available from that URL. At that point, instead of deleting the file, you may only label it as "Deprecated", which removes it from the list of currently supported downloads. 
+
+Deprecated files still count toward your project download space quota.  Rather than deleting content to manage your quota usage, please ask for more quota by following the instructions on the "New Download" page.
+
+=== What other limits exist? ===
+There are disk-space quota limits for both issue tracker attachments and total Subversion repository size, along with a limit on how many total projects you are able to create. If you hit these limits, please contact us via our [http://groups.google.com/group/google-code-hosting?lnk=sg Google Group] or email google-code-hosting@googlegroups.com directly to discuss the situation.
+
+=== Why aren't you offering my favorite tool? ===
+We want our collaborative development environment to be simple, fast, reliable, and scalable, so we only offer tools that are aligned with those goals. This way, we can manage and support the tools we offer in a scalable manner. 
+
+If you need more tools, you might choose to run them yourself on your own servers, or you might make use of individual tools that are offered by other project-hosting sites. You can loosely integrate with other tools and websites by linking to them from your project-summary page.
+
+----
+
+== Issue Tracking ==
+
+=== Why build yet another issue-tracking tool? ===
+An issue tracker is an application that users and developers use to maintain a database of software defects, change requests, technical-support requests, development tasks, and other issues that the project members must work to resolve. Since they're so central to each developer's daily work, many issue tracking systems have already been built. Most existing issue tracker tools force developers to follow a particular software development process by defining a set of fields, possible values, and workflow states for each issue. The result is often a complex tool that's difficult to use because it includes many fields and options that aren't applicable to a given issue. 
+
+In contrast, our issue tracker uses only a minimal set of fields, and offers users the ability to store the information that they need as labels. This approach is possible because it uses Google's free-text search technology to search on all issue metadata.
+
+=== How do I browse project issues? ===
+Visit the project and click the "Issues" tab. You will immediately see a list of all open issues in that project.
+
+=== How do I search project issues? ===
+Immediately under the "Issues" tab, there is a search box that can be used for searching. Each search takes place in a search context that is selected by a drop-down menu. By default, all searches only consider open issues; if you would like to search closed issues, select "All issues" from the search context drop-down menu. 
+
+You can quickly narrow your search by clicking on the issue list table headers and selecting a value from the "Show only" sub-menu. 
+
+Another way to search is to use the "Advanced Search" link under the "Issues" tab. This page helps you form a complex query. However, once you learn the query syntax, you can enter complex queries directly into the main search field. For more information on issue queries, click "Search Tips" under the "Issues" tab.
+
+=== How do I file a project bug report? ===
+Click "New Issue" under the "Issues" tab. Enter a one-line summary and a description of the problem that you encountered and the expected result. The description text field already has text that helps you enter a detailed bug report. If you are an owner or member of the project, you will also see more fields for the issue metadata.
+
+=== How do I file a project feature request? ===
+The issue tracker can be used for feature requests, support requests, or any other type of development task that a project needs to track. You can file a feature request by clicking "New Issue" and entering a summary and description. A feature request will not have "steps to reproduce", so you might want to change that to something more appropriate, like "use case steps".
+
+=== Can I file an issue anonymously? ===
+No. To prevent abuse and improve report quality, Google Code requires a Google Account to post new issues and comments. Anyone who does not have a Google account may [http://www.google.com/accounts/NewAccount?continue=http://code.google.com/hosting/faq.html sign up] for one at no cost. After an issue report has been entered, it is viewable by anyone without the need to sign in.
+
+=== How do I edit the issue metadata? ===
+Only project owners and members can edit issue metadata. If you are an owner or member, you will see additional fields when entering a new issue or adding a comment. The drop-down auto-complete menu for each field will help you enter commonly used values. However, for the labels, you are free to enter new or uncommon labels simply by typing them.
+
+=== What are issue labels? Why Priority-Medium? ===
+Labels are simply strings that are meaningful to the project members, but that have no particular meaning to the issue tracker itself. For example, you could label an issue as "Hot" if you like.
+
+When an issue label has a dash in it, e.g., "Priority-Medium", then that is interpreted as a key-value pair that can be used like a custom field. The prefix before the first dash is the key, and the part after it is the value. You can configure the issue list to show a column for any prefix. And, you can search for values within a specific custom field by using "prefix:value".
+
+=== Can I change the set of labels offered in the auto-complete menu? ===
+Project owners can configure the set of labels that are offered to members of a project. To edit the predefined labels, click the "Administer" tab and the "Issue tracking" sub-tab. Use the text fields to configure the set of issue statuses and labels that will be offered. 
+
+For example, if your project is building a graphics driver, maybe you would like to label some of your issues with Depth-16bit, Depth-24bit, and/or Depth-32bit.
+
+=== What if someone types in a nonsense label or status? ===
+Remember, only project owners and members can edit issue metadata. Usually, if someone in the project uses an unexpected status or label, it is because the issue itself is a special case that does not follow the normal workflow. The issue tracker shows a brief warning whenever an uncommon status or label is used. If some project member goes out of their way to enter a nonsensical label, you can always see who did it, change it back, and send them an email.
+
+=== If there is a duplicate issue, how should the issue be triaged? ===
+Sometimes users will file issues that have already been reported. When a duplicate issue is entered into the issue tracker, a project member or owner can mark that issue as a 'Duplicate'.
+
+To do this set the status of the duplicate issue to 'Duplicate'. Setting the status as 'Duplicate' will prompt the user to enter the issue id of the original issue. Marking an issue as 'Duplicate' adds the stars and copies cc email addresses to the original issue. This also closes the duplicate issue.
+
+=== How do I track when one issue is blocked on other issues? ===
+On occasion, an issue cannot be fixed until another issue is fixed first. The project member or owner can track which issues the current issue is blocked on by adding the issue ids in the 'Blocked on' field. 
+
+=== How can I learn more about the issue tracker? ===
+
+See the IssueTracker wiki page.
+
+----
+
+== Project Wikis ==
+
+=== What syntax are you using in the wiki? ===
+Our wiki syntax is inspired by the MoinMoin wiki syntax, and is more or less a subset of it. We've found that MoinMoin is one of the most popular open source wikis and provides a clean syntax for users. 
+
+Specific examples of how to use the wiki syntax are shown in the "Wiki Markup Help" box on the right-hand side of the wiki page creation and editing pages.
+
+=== Why are you not hosting an existing wiki system like MoinMoin, TWiki, or MediaWiki? ===
+Most of the existing wiki products cannot scale to the size and concurrency that we expect, so we had to design one to work to our demands, using Google's infrastructure. In addition, we believe that tools are most useful when they are easy to use and well integrated into the collaborative development environment. So, we are offering a simple wiki that works well with our existing tools. If you find that your project needs some highly specialized formatting, you can link to [http://pages.google.com/ Google Page Creator], [http://docs.google.com/ Google Docs and Spreadsheets], [http://groups-beta.google.com/ Google Groups], or other pages hosted elsewhere on the Internet.
+
+=== What wiki features do you support? ===
+We believe that simplicity helps people collaborate, so we have focused on the most commonly used content formatting features. We support layout of headings, paragraphs, bullet lists, numbered lists, block quotes, and blocks of code. Text phrases can be formatted with bold, italic, strikethrough, superscipt, subscript, or code font. WikiWords are automatically linked, and you can also link to URLs and customize the link text. We support very simple tables for display of data. Optional #summary and #labels lines at the top of each file specify metadata about the page. Our wiki does not support sub-pages, attachments, variables, or macros.
+
+=== How do I update pages for my project? ===
+Click on the Wiki tab of your project to see a list of all wiki pages. To add a new page, you must be a project owner or member; click on the "New Page" link in the toolbar under the main tabs. This will bring you to the wiki editor where you can add content and assign labels to your wiki page. To edit an existing page, first view the page, and then click "Edit this page" in the toolbar. 
+
+=== How do I edit a wiki page directly through subversion? ===
+You can also add and edit pages directly through Subversion, since all wiki pages are stored in the /wiki/ directory in your project's Subversion repository. 
+Most developers only check out the /trunk/ directory. To have /wiki/ in your working copy, you might use a command of the form:
+{{{svn checkout https://PROJECTNAME.googlecode.com/svn/wiki/ PROJECTNAME-wiki --username USERNAME}}}
+
+Each wiki page is stored in a corresponding file in the repository's /wiki directory.  E.g., a page named "!UserGuide" would be stored in /wiki/!UserGuide.wiki.  You may edit, delete, or add wiki pages by editing, deleting, or adding files that fit that convention.  The contents of a .wiki file should be plain text that follows the WikiSyntax. Other files and directories under /wiki are currently ignored.
+
+=== What types of content is this intended for? ===
+Project roadmaps, how-tos, installation notes, and documentation are great examples of potential wiki pages. Wiki pages are easy for project members to edit quickly and are easier to find than email threads, so use them for documents that your team will refer to and update often.
+
+=== Who can add and edit pages to my wiki? ===
+Only project members and owners can add and edit wiki pages for a particular project.
+
+=== Where is the wiki content stored? ===
+All wiki pages are stored in the /wiki/ directory of your project's Subversion repository, as files ending in .wiki (other files and subdirectories will be ignored). That means you can use a Subversion client and your favorite text editor to add and edit wiki pages.
+
+----
+
+== Google Groups ==
+
+=== What is a Google Group? ===
+A Google Group is a mailing list hosted at groups.google.com. Each Google Group has an extensive web interface, but you are also perfectly welcome to use it as a plain-old mailing list.
+
+=== Does creating a new project on Google Code automatically create a Google Group for me? ===
+No. Google Code offers the ability to send issue tracker and Subversion commit emails to mailing lists of your choice, but it doesn't create those mailing lists for you.
+
+=== How do I create a mailing list for my project? ===
+You can visit [http://groups.google.com/ Google Groups] and create as many mailing lists as your project needs. We recommend that you create at least two lists: one for developer discussions and one to receive Subversion commit emails.
+
+=== Can I use an existing mailing list with my project? ===
+Sure. Just link to its existing web interface using a regular project link. If you have an existing mailing list for automated commit messages, enter its address in the form that is under the "Administer" tab.
+
+=== How do I make my mailing list accept Subversion commit emails? ===
+Simply configure your mailing list to accept posts from codesite-noreply@google.com. You can do this by adding the address to the "allowed posters" list, or by making that address a member of the list with no delivery.
+
+----
+
+== Subversion ==
+
+=== What version of Subversion do you use? ===
+We currently use Subversion 1.4.0, made available via WebDAV. 
+
+Anonymous checkouts can be done via http://, while developers must use authenticated https:// to commit changes.
+
+=== Do you have support for ViewVC or similar repository-browsing tools? ===
+Support for tools such as ViewVC isn't implemented yet, but we do provide our own web-based source browsing. Source browsing can be accessed under the "Source" tab for each project, under the "Browse" sub-tab.
+
+=== How can I make SVN serve HTML and images with the correct Content-Type? ===
+You need to tell subversion what mime-type to use.  Just use the command:
+{{{
+svn propset svn:mime-type 'text/html' FILENAME
+}}}
+or
+{{{
+svn propset svn:mime-type 'image/jpeg' FILENAME
+}}}
+
+For more info:
+[http://svnbook.red-bean.com/en/1.4/svn.advanced.props.file-portability.html#svn.advanced.props.special.mime-type]
+
+It's also possible to configure your Subversion client to automatically set each file's mime-type. For example, by modifying ~/.subversion/config to resemble
+
+{{{
+[miscellany]
+enable-auto-props = yes
+
+[auto-props]
+*.html = svn:mime-type=text/html
+}}}  
+
+For more info:
+[http://svnbook.red-bean.com/en/1.1/ch07.html#svn-ch-7-sect-1.3.2]
+
+=== How do I import my existing source code? ===
+Just use the 'svn import' command. Note that this command only loads a single tree of code into your repository.
+
+=== How do I import an existing Subversion repository? ===
+To upload the history of an existing Subversion repository, use the svnsync tool that ships with Subversion 1.4. Run svnsync help to read more about this tool.
+
+Note that your Google Code repository must be reset to revision 0 for this to work. If your project is newly created, it will be at revision 1, and your project's Source tab will display instructions on how to reset the repository yourself. (Note: you must be a project owner to reset your own repository, and also to push code up with svnsync.)
+
+If your repository's latest revision is greater than 1, then a site administrator will have to reset the repository for you; email google-code-hosting@googlegroups.com and ask for this, or post directly to the [http://groups.google.com/group/google-code-hosting?lnk=sg Google Group].
+
+Here's a sample transcript that demonstrates how you can push history from an existing repository (located at file:///my/repos) to your repository on Google Code:
+
+{{{
+  $ svnsync init --username YOURUSERNAME https://YOURPROJECT.googlecode.com/svn file:///path/to/localrepos
+  Copied properties for revision 0.
+  $ svnsync sync --username YOURUSERNAME https://YOURPROJECT.googlecode.com/svn
+  Committed revision 1.
+  Copied properties for revision 1.
+  Committed revision 2.
+  Copied properties for revision 2.
+  [...]
+}}}
+
+When prompted for your password, use your googlecode.com password, which can be found on your [http://code.google.com/hosting/settings settings page]. 
+
+Running svnsync on a large repository will take a significant amount of time. If you are disconnected during the process, you may see the error message "svnsync: Couldn't get lock on destination repos after 10 attempts". If this happens, you can remove the lock yourself; see the "Locks" section of [http://svn.collab.net/repos/svn/trunk/notes/svnsync.txt svnsync.txt].
+
+=== How can I import a CVS repository into my project? ===
+The [http://cvs2svn.tigris.org/ cvs2svn] tool is a well-established tool to convert CVS history to Subversion history. Use it to create a Subversion repository, and then use the svnsync to push the Subversion history up to your Google Code repository. (See "How do I import existing Subversion history?")
+
+=== How do I download my Subversion history? ===
+To download the history of your Google Code repository, use the svnsync tool that ships with Subversion 1.4. Run 'svnsync help' to read more about this tool. Note that your local repository must have an executable 'pre-revprop-change' hook script which allows revprop changes (or at least those of the form '`svnsync*`'.) Here's a sample transcript that demonstrates how you can pull history from your Google Code repository to a local repository: 
+
+{{{
+  $ svnadmin create localrepos
+  $ emacs localrepos/hooks/pre-revprop-change # make it 'exit 0'
+  $ chmod +x localrepos/hooks/pre-revprop-change
+  $ svnsync init --username USERNAME file:///path/to/localrepos https://myproject.googlecode.com/svn
+  Copied properties for revision 0.
+  $ svnsync sync --username USERNAME file:///path/to/localrepos
+  Committed revision 1.
+  Copied properties for revision 1.
+  Committed revision 2.
+  Copied properties for revision 2.
+  [...]
+}}}
+
+After you've done this once, you can continue to run the last 'svnsync sync' command to periodically pull down the latest commits and keep your local mirror up-to-date.
+
+=== How much disk space can my repository use? ===
+We're offering plenty of space for storing source code under revision control. We start new projects with a 100MB quota. That's enough to host the vast majority of open source projects. We're also willing to work with projects that need more space.
+
+=== Where do I get a copy of Subversion? ===
+Just visit the downloads page on [http://subversion.tigris.org/].
+
+=== Where can I get more info about using Subversion? ===
+You might want to read the [http://svnbook.red-bean.com/ Subversion Book].
+
+=== Can I use Microsoft Visual Studio with Google Code? ===
+Yes. There are a number of Windows clients for Subversion: you can use the command-line client, though TortoiseSVN is a very popular client that integrates Subversion functionality directly into Windows Explorer. Another possibility is to use [http://ankhsvn.tigris.org/ AnkhSVN], which is a Visual Studio plug-in that offers Subversion access within the IDE.
+
+=== Can I set fine-grained path access controls in the Subversion repository? ===
+No. While corporate software projects tend to revolve around fine-grained access control to source code, we don't think that this is the most productive practice for open source development. In an open source project, the code is entirely public and the developer community should be based on trust. If your community invites someone to be a project member, then it's a collective statement that your community trusts the person with write access to the repository. If the community feels that the person should only change certain portions of the source code, then that expectation should be made clear. If the new member violates this social contract, the community is free to expel the member and revert any unwanted commits.
+
+=== Where do I get a password for committing to Subversion? ===
+If you're an owner or member of a project, just look at your "Settings" page. It will display your googlecode.com password. This password is used for access to your project's Subversion repository and for command-line file uploads to your project's Downloads area. This password is not the same as the password that you use to access your project on the web.
+
+=== How do I change my Subversion password? ===
+Your "Settings" page has a button to automatically regenerate your googlecode.com password.
+
+=== How do I check out code anonymously? ===
+You can use a Subversion client to check out a project's "trunk" code by requesting this URL:
+http://projectname.googlecode.com/svn/trunk
+
+=== How do I check code into the repository? ===
+You can use the 'svn import' command, just as you'd do with any typical Subversion repository.
+
+=== How do I give new developers check-in privileges? ===
+If you're a project owner, just go to the project's "Administer" tab and add people as project members.
+
+=== How do I take away check-in privileges of a developer who's no longer participating in the project? ===
+If you're a project owner, just go to the project's "Administer" tab and remove that person's project membership.
+
+=== What does "use the fingerprint to validate the certificate manually" mean? ===
+If you get a message such as the following: 
+
+{{{
+  Error validating server certificate for 'https://projectname.googlecode.com:443':
+   - The certificate is not issued by a trusted authority. Use the
+     fingerprint to validate the certificate manually!
+}}}
+
+...you should check that the "fingerprint" or "SHA1 fingerprint" given for the certificate is:
+
+{{{B1:3A:D5:38:56:27:52:9F:BA:6C:70:1E:A9:AB:4A:1A:8B:DA:FF:EC}}}
+
+If it is not, please email us at code-hosting@google.com.
+
+=== Does Google own the code that I check into Subversion? ===
+Hosting your code on Google Code doesn't change ownership of the code in any way.
+
+----
+
+== Other Questions ==
+
+=== Will my project appear in Google Web Search? ===
+At the moment, no. It will only appear in the search results of the search box at [http://code.google.com]. In the future, however, your project is likely to appear in Google's main index.
+
+=== Will hosting my project here improve its PageRank? ===
+No. Your PageRank will only improve if other websites think your project is important and link to it.
+
+=== How do I import my project from SourceForge, Tigris, or another site? ===
+We have no import feature at this time.
+
+=== What technology does the site use for its operation? ===
+Like most Google products, the site is built on scalable Google infrastructure and uses AJAX for the user interface. The issue tracker is written in Python, and uses Google's free-text search technology. The Subversion server is based on the standard open source product, with changes to run on Google's infrastructure.
+
+=== If I find a problem with the hosting on Google Code, how do I file a bug? ===
+Visit the user support [http://code.google.com/p/support/issues/list issue tracker]. Check whether an appropriate issue has already been created, and if not, create one yourself.
+
+=== How do I file a feature request for Google Code? ===
+Visit the user support [http://code.google.com/p/support/issues/list issue tracker]. Check whether an appropriate issue has already been created, and if not, create one yourself.
+
+=== What information does Google Code collect about users? ===
+Check the Google Code [http://code.google.com/tos.html Terms of Service] for more information, with specific reference to our privacy policy.
+
+=== What measures is Google Code taking to protect the privacy and security of people's information? ===
+Privacy and security are extremely important to us. 
+
+Google Code uses your Google or Gmail account for authentication. For Subversion authentication, a secondary generated password is used. Logs of your activities are not released to any third parties. 
+
+For more info, please check out our [http://code.google.com/tos.html Terms of Service].
+
+=== I'm new to open source... how do I run an open source project? ===
+If you are new, you should plan to participate in existing open source projects to learn how they work. You might also want to check out Karl Fogel's book, [http://producingoss.com/ Producing Open Source Software].
+
+=== Is Google Code going to integrate with other Google products? ===
+To some extent it already does. For example, it uses Google Accounts
+for authentication, and the issue tracker uses Google's search
+technology. Look for more integration with other Google products as
+the site matures.
+
+=== I found a project that's not open source. Who do I notify? ===
+Please send an email to code-hosting@google.com.
+
+=== How do I report a DMCA violation? ===
+Please read the Google Code [http://code.google.com/tos.html Terms of Service], then follow the instructions on our [http://www.google.com/dmca.html DMCA page].
+
+=== How do I report abuse of Google Code site? ===
+Please send an email to code-hosting@google.com.
+
+
+_The content on this page created by Google is licensed under the [http://creativecommons.org/licenses/by/3.0/ Creative Commons Attribution 3.0 License].  User-generated content is not included in this license._

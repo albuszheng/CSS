@@ -1,0 +1,151 @@
+#summary Interesting developer gadgets that we liked
+
+=Interesting Developer Gadgets for Google Code=
+
+The Google Code Project Hosting wiki supports gadgets so that you can import data from third party sites into your wiki pages.  Here are some gadgets that we think are useful.
+
+These gadgets have the following characteristics:
+ #1 They are targeted towards developers and open source projects.
+ #2 They offer insight into a project that is not otherwise easily accessible.
+ #3 They can be scoped to a particular project or project(s).
+
+If you have any gadgets that meet that criteria, let us know in our
+support group and we would be happy to showcase them. Also see the [http://code.google.com/p/google-code-project-hosting-gadgets/ Project Hosting Gadgets] project for more gadgets you can use.
+
+*How to Use These Gadgets*
+
+If you want to put one of these gadgets on your wiki page or even your project homepage, use our new `<wiki:gadget...>` syntax.  Each of the example gadgets below has a snippet you can copy-paste to get started.
+
+== Math ML == 
+You can use a gadget to display a mathematical formula.
+
+*Gadget*
+<wiki:gadget url="http://mathml-gadget.googlecode.com/svn/trunk/mathml-gadget.xml" border="0" up_content="root3x + x^phi + x_1" height="15" />
+
+*Code*
+
+{{{
+<wiki:gadget url="http://mathml-gadget.googlecode.com/svn/trunk/mathml-gadget.xml" border="0" up_content="root3x + x^phi + x_1" height="15"/>
+}}}
+
+==Google Code==
+
+You can use a gadget to display any blog that has an Atom or RSS feed.
+
+*Gadget*
+<wiki:gadget url="http://google-code-feed-gadget.googlecode.com/svn/build/prod/feedgadget/feedgadget.xml" up_feeds="http://googlecode.blogspot.com/atom.xml" up_gadgetTitle="Featured Projects" width="500" height="340" border="0"/>
+
+*Code*
+
+{{{
+<wiki:gadget url="http://google-code-feed-gadget.googlecode.com/svn/trunk/gadget.xml" up_feeds="http://google-code-featured.blogspot.com/atom.xml"  width="500" height="340" border="0"/>
+}}}
+
+Replace the `up_feeds` URL with a the XML feed for your blog.  If you have more than one project blog, you can list multiple URLs, separated by vertical bars (`|`).
+
+
+
+==MarkMail==
+[http://markmail.org MarkMail] is a free service for searching mailing list archives. These gadgets are particularly useful if you have a forum for your software project. The following is an example of the google-web-toolkit forum.   
+
+*Gadget*
+
+<wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?l=google-web-toolkit" width="500" height="340" border="1"/>
+
+*Code*
+
+{{{
+<wiki:gadget url="http://markmail.org/gadgets/markmailmini.xqy?l=google-web-toolkit"/>
+}}}
+
+You can customize the gadget by changing the parameters in the URL, or you can use the [http://markmail.org/gadgets/builder/ MarkMail Gadget Builder]. For information on search syntax, refer to the [http://markmail.org/docs/faq.xqy#searchsyntax MarkMail FAQ].
+
+==Ohloh==
+[http://ohloh.net Ohloh.net] provides an open source software directory and various community features for open source developers. The following are a few of the Ohloh gadgets that we liked.
+
+Note: All the examples are for [http://code.google.com/p/google-web-toolkit Google Web toolkit]. To find gadgets for your project, [http://www.ohloh.net/projects/search search] for your project on Ohloh.net, go to the project page, and click the widget link.
+
+===Stats===
+
+*Gadget*
+
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_basic_stats.xml" height="220" border="1"/>
+
+*Code*
+
+{{{
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_basic_stats.xml" height="220" border="1" />
+}}}
+
+===Factoids===
+
+*Gadget*
+
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_factoids.xml" width="340" height="170" border="0" />
+
+*Code*
+
+{{{
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_factoids.xml" width="340" height="170" border="0" />
+}}}
+
+===Project Languages===
+
+*Gadget*
+
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_languages.xml" width="340" height="200" border="1" />
+
+*Code*
+
+{{{
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_languages.xml" width="340" height="200" border="1" />
+}}}
+
+===Project Cost===
+
+*Gadget*
+
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_cocomo.xml" height="250" border="0" />
+
+*Code*
+
+{{{
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_cocomo.xml" height="250" border="0" />
+}}}
+
+===I Use It===
+
+*Gadget*
+
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_users.xml" height="100" border="0" />
+
+*Code*
+
+{{{
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_users.xml" height="100" border="0" />
+}}}
+
+===Partner Badge===
+
+*Gadget*
+
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_partner_badge.xml" height="55" border="0" />
+
+*Code*
+
+{{{
+<wiki:gadget url="http://www.ohloh.net/p/gwt/widgets/project_partner_badge.xml" height="55" border="0" />
+}}}
+
+===Google Moderator===
+[http://www.google.com/moderator Google Moderator] allows users to submit feedback and vote on feedback from others.  You can use it as a way of collecting basic input beyond the issue tracker.  [http://www.google.com/moderator/#13 Create a series] for your project first, and then put the URL of that series in the gadget code:
+
+*Gadget*
+
+<wiki:gadget url="http://www.google.com/moderator/static/moderator-embed-gadget.xml" height="400" width="900" up_url="http://www.google.com/moderator/#15/e=1c1a0&t=1c1a0.40" up_sort="HOT" up_hl="en" /> 
+
+*Code*
+
+{{{
+<wiki:gadget url="http://www.google.com/moderator/static/moderator-embed-gadget.xml" height="400" width="900" up_url="http://www.google.com/moderator/#15/e=1c1a0&t=1c1a0.40" up_sort="HOT" up_hl="en" />
+}}}

@@ -1,0 +1,92 @@
+#summary A quick guide to getting started with project hosting on Google Code.
+#labels Featured,Restrict-AddWikiComment-Commit
+
+=Getting Started=
+
+Project Hosting on Google Code provides a free collaborative development environment for open source projects. Each project comes with its own member controls, Subversion/Mercurial/Git repository, issue tracker, wiki pages, and downloads section. Our project hosting service is simple, fast, reliable, and scalable, so that you can focus on your own open source development.
+
+This guide provides information on:
+
+<wiki:toc max_depth="3" />
+
+== Contributing Open Source Code ==
+
+Before you create a new project, please [http://code.google.com/hosting/ search] for existing projects on this site and elsewhere on the web. It is better to help out with an existing project than to start one from scratch.
+
+  * Go to the [http://code.google.com/hosting/ Project Hosting main page] and search for existing projects ([http://code.google.com/p/support/wiki/HowToJoinAProject How to join a project])
+  * Go to the [http://code.google.com/hosting/createProject Create Project] page and fill out the form. Remember, pick good labels (see [http://code.google.com/hosting/ Project Hosting main page] for examples).
+    * [http://opensource.org/licenses/category How to choose a license].
+    * [ChoosingAVersionControlSystem How to choose a version control system].
+
+== Working with your Project ==
+
+=== Customizing your Project ===
+
+You can use the functionality under the *Administer* tab to customize your project. This tab is visible only to project owners. The following subtabs are useful when creating new projects:
+  * *Project Summary* subtab -- You can modify some of the options that you set during project creation, as well as set up blogs, analytics, and a custom project logo. This also provides another opportunity to set up project labels, which will help others find your project.
+  * *Project Members* subtab -- You can add new owners or committers to the project.
+  * *Source* subtab -- You can elect to have non-project members review your code.
+
+You'll also likely want to set up mailing lists for notifications of commits and issue changes. The emails allow project members and others to keep track of changes to the source code that might affect them. To set up mailing lists, perform the following:
+  # If you need to create mailing lists, you may want to use [http://code.google.com/p/support/wiki/FAQ#Google_Groups Google Groups].
+  # Add `(your-project-name)@googlecode.com` as an allowed poster to all mailing lists that will receive notifications.
+  # In your project, click the *Administer* tab.
+  # Click the *Source* subtab.
+  # In the Activity Notifications area, enter mailing lists that will receive notifications of *All commits* and click *Save Changes*.
+  # Click the *Issue Tracking* subtab.
+  # In the Activity Notifications area, enter mailing lists that will receive notifications of *All issue changes* and click *Save Changes*.
+
+=== Working with your Source Repository ===
+
+Each project has its own [http://subversion.apache.org/ Subversion] or [http://www.selenic.com/mercurial/ Mercurial] or [http://git-scm.com/ Git] repository.
+  * [http://svnbook.red-bean.com/ Learn more] about using Subversion.
+  * [http://hgbook.red-bean.com/ Learn more] about using Mercurial.
+  * [http://git-scm.com/documentation Learn more] about using Git. 
+
+Perform the following to check code in and out of your source repository:
+
+  # For instructions on how to check out a project's repository from the command line, go to the *Source* tab. Any user, regardless of whether they have a Google account, can check out and browse the repository anonymously, while project owners and committers are granted full read and write permissions. You can add project owners and committers at the [#Customizing_your_Project_on_the_Administer_Tab Administer tab].
+  # If you plan on synching from an existing repository, you *must* click the *Reset This Repository* link at the bottom of the *Source* tab page before making any other changes to your project's repository.
+
+After you've been working with your project for a while, the following subtabs on the *Source* tab will come in handy:
+
+  * *Browse* subtab -- Allows you to browse the files and directories in your project as they existed at a point in time.
+  * *Changes* subtab -- Lists changes made to the repository. You can also use this subtab to start a code review of any change.
+
+=== Documenting your Project ===
+
+You can use the functionality under the *Wiki* tab to create wiki pages for your project. Our wiki syntax is inspired by the !MoinMoin wiki syntax, and is more or less a subset of it. We've found that !MoinMoin is one of the most popular open source wikis and provides a clean syntax for users. 
+
+Perform the following to create a wiki page:
+
+  # In your project, click the *Wiki* tab.
+  # Click the *New page* subtab.
+  # Type the *Page Name*. This value must be alphanumeric with no spaces. You won't be able to change this name later, so be careful.
+  # Enter the text and syntax for the page in the *Content* field. [WikiSyntax Learn more] about the wiki syntax.
+  # Click a link in one of the *Labels* fields to see the available list of labels. Labels help the user determine how relevant the wiki page is to them.
+  # Click *Preview*, *Save page*, or *Discard*.
+
+=== Tracking Project Tasks ===
+
+The *Issues* tab is a great way to keep track of the ongoing features, tasks, and bugs in your project. It allows multiple project members to see what others are currently doing.
+
+After you click the *New issue* subtab to create a new issue, please note the *Labels* fields. Labels are strings that are meaningful to the project members. When an issue label contains a dash, such as `Priority-Medium`, it is interpreted as a key-value pair that you can use like a custom field.
+
+  * The prefix before the first dash is the key.
+  * The part after the first dash is the value.
+
+You can configure the issue list to show a column for any prefix. You can also search for the values within a specific custom field by using `prefix:value`. 
+
+=== Sharing Releases ===
+
+When you're ready to release your code, you can use the *Downloads* tab to upload compressed files. Others can then go to this tab on your project to download the code for their own use.
+
+Be sure to choose the file names carefully before you upload them. The file name will become part of your URL, and you cannot change it later. Include a release number in the name of any file that may change in a later release.
+
+While we recommend that you mark old releases as `deprecated`, you *can* delete files from the *Downloads* tab: click on the row for the file name (not the file link) to get to the download details page, then click the 'Delete' link. 
+
+== Finding Further Help ==
+
+For general questions, check the [FAQ] wiki page. If you have a question that still isn't answered, bring it up on the [http://groups.google.com/group/google-code-hosting Google Group].
+
+_The content on this page created by Google is licensed under the [http://creativecommons.org/licenses/by/3.0/ Creative Commons Attribution 3.0 License].  User-generated content is not included in this license._

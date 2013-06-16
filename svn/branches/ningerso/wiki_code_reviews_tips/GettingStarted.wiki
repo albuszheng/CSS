@@ -1,0 +1,124 @@
+#summary A quick guide to getting started with Project Hosting on Google Code.
+#labels Featured
+
+
+= Getting Started with Project Hosting =
+
+Project Hosting on Google Code provides a free collaborative development environment for open source projects. Each project comes with its own member controls, Subversion repository, issue tracker, wiki pages, and downloads section. Our Project Hosting service is simple, fast, reliable, and scalable, so that you can focus on your own open source development.
+
+This guide provides instructions for working on existing projects, setting up a new project, working with  your source repository, and applying some useful customization features. It includes information on:
+
+  * [#Collaborating_on_an_Existing_Project Collaborating on an Existing Project]
+  * [#Creating_a_Project Creating a Project]
+  * [#Working_with_your_Source_Repository_on_the_Source_Tab Working with your Source Repository on the Source Tab]
+  * [#Customizing_your_Project_on_the_Administer_Tab Customizing your Project on the Administer Tab]
+  * [#Documenting_your_Project_on_the_Wiki_Tab Documenting your Project on the Wiki Tab]
+  * [#Tracking_Project_Tasks_on_the_Issues_Tab Tracking Project Tasks on the Issues Tab]
+  * [#Sharing_your_Code_on_the_Download_Tab Sharing your Code on the Download Tab]
+  * [#Finding_Further_Help Finding Further Help]
+
+*Note:* To use Project Hosting on Google Code, you must be in a country where Google is able to conduct business, and your project must be open source.
+
+== Collaborating on an Existing Project ==
+
+A good project starts with a good idea -- one that addresses a real need, is feasible and well-scoped, and isn't well covered by existing open source projects. Before you create a new project, we suggest that you try searching for existing projects on this site and elsewhere on the Web. You can often get further faster by helping out with an existing project than by starting one from scratch. Read through this guide first to learn more about the functionality in Project Hosting, and then use the following pointers when browsing through projects:
+
+  * Go to the [http://code.google.com/hosting/ Project Hosting main page] and search for existing projects.
+  * Open a project and read the information on the *Project Home* tab.
+  * Click the *Wiki* tab and review the project documentation.
+  * Click the *Downloads* tab and download a release of the project.
+  * If you find any issues after running the downloaded programs, click the *Issues* tab and create a new issue.
+  * If the project interests you, most projects have mailing lists that the developers use to discuss the project. To become a project member, first participate in the mailing list by showing your interest in the project and your ability to help. You can then ask one of the project owners to make you a member of the project.
+
+== Creating a Project ==
+
+If you've reviewed existing projects and couldn't find one that meets your needs, perform the following to create a new project in Google Code:
+
+  # Project Hosting is open to anyone with a Google account, including Gmail users. If you don't already have a Google account, [https://www.google.com/accounts/NewAccount create one now].
+  # Go to the [http://code.google.com/hosting/createProject Create Project] page. If you haven't already done so, Google Code will prompt you to sign in to your Google account.
+  # In the *Project Name* field, the name you enter must consist of a lowercase letter, followed by lowercase letters, digits, and dashes, with no spaces. The project name will be part of your URL, so you won't be able to change it later. For example, if you name your project 'foo,' your project's URL will be http://code.google.com/p/foo/ or http://foo.googlecode.com/ (the latter redirects to the former).
+  # In the *Summary* field, Google Code will display this one-line description whenever it shows the project name.
+  # In the *Description* field, enter the main content of your project's home page. You can use [WikiSyntax wiki markup].
+  # Select the desired license for your project from the dropdown list in the *License* field. Your choice of license will determine how others can use your work. The available licenses allow you to standardize your projects to the most popular, time-tested licenses. These licenses offer the diversity to meet most developer needs. Go to [http://opensource.org/licenses/category opensource.org] for more information about these licenses.
+  # The project labels that you enter in the *Labels* fields will help others find your project. When someone enters one of your labels in a project search, your project is more likely to appear in the search results. Users can also browse for projects by label by entering `label:` before the label name in a project search. Look at the [http://code.google.com/hosting/ Project Hosting main page] for examples of project labels.
+  # Click *Create Project*. Your newly created hosting project appears and is ready for use. The project contains the following menu tabs:
+    * Project Home
+    * [#Sharing_your_Code_on_the_Download_Tab Downloads]
+    * [#Documenting_your_Project_on_the_Wiki_Tab Wiki]
+    * [#Tracking_Project_Tasks_on_the_Issues_Tab Issues]
+    * [#Working_with_your_Source_Repository_on_the_Source_Tab Source]
+    * [#Customizing_your_Project_on_the_Administer_Tab Administer]
+
+*Note:* You have a lifetime creation limit of 10 projects in total. If you need more, please come to the [http://groups.google.com/group/google-code-hosting google-code-hosting Google Group] to get more -- we're glad to raise your limit if you need it!
+
+== Working with your Source Repository on the Source Tab ==
+
+Each project comes with its own [http://subversion.tigris.org/ Subversion] repository. If you aren't familiar with Subversion, the [http://svnbook.red-bean.com/ Subversion Book] is a good starting point.
+
+Perform the following to check code in and out of your source repository:
+
+  # For instructions on how to check out a project's Subversion repository from the command line, go to the *Source* tab. Any user, regardless of whether they have a Google account, can check out and browse the repository anonymously, while project owners and members are granted full read and write permissions. You can add project owners and members at the [#Customizing_your_Project_on_the_Administer_Tab Administer tab].
+  # If you plan on synching from an existing repository, you *must* click the *Reset This Repository* link at the bottom of the *Source* tab page before making any other changes to your project's repository. *This includes creating any new wiki pages* because resetting the repository results in the loss of wiki content. Do not start a wiki page in your project before you complete this step.
+
+After you've been working with your project for a while, the following subtabs on the *Source* tab will come in handy:
+
+  * *Browse* subtab -- Allows you to browse the files and directories in your project as they existed at a point in time.
+  * *Changes* subtab -- Lists changes made to the repository. You can also use this subtab to start a code review of any change.
+
+== Customizing your Project on the Administer Tab ==
+
+You can use the functionality under the *Administer* tab to customize your project. This tab is visible only to project owners. The following subtabs are especially useful when creating new projects:
+  * *Project Summary* subtab -- You can modify some of the options that you set during project creation, as well as set up email alerts, blogs, and analytics. This provides another opportunity to set up project labels, which will help others find your project. You can also elect to use a separate content license for non-code components such as documentation.
+  * *Project Members* subtab -- You can add new owners and members to the project.
+  * *Source Members* subtab -- You can elect to have non-project members review your code.
+
+You will likely want to set up mailing lists for notifications of commits and issue changes. The emails allow project members and others to keep track of changes to the source code that might affect them. To set up mailing lists, perform the following:
+  # If you need to create mailing lists, you may want to use [http://groups.google.com/ Google Groups].
+  # Add `codesite-noreply@google.com` as an allowed poster to all mailing lists that will receive notifications.
+  # In your project, click the *Administer* tab.
+  # Click the *Project Summary* subtab.
+  # In the Activity Notifications area, enter:
+     * Mailing lists that will receive notifications of *All Subversion commits*.
+     * Mailing lists that will receive notifications of *All issue changes*.
+  # Click *Save Changes*.
+
+== Documenting your Project on the Wiki Tab ==
+
+You can use the functionality under the *Wiki* tab to create wiki pages for your project. Our wiki syntax is inspired by the !MoinMoin wiki syntax, and is more or less a subset of it. We've found that !MoinMoin is one of the most popular open source wikis and provides a clean syntax for users. 
+
+Perform the following to create a wiki page:
+
+  # In your project, click the *Wiki* tab.
+  # Click the *New Page* subtab.
+  # Type the name of the new wiki page in the *Page Name* field. This value must be alphanumeric with no spaces. You won't be able to change this name later, so be careful.
+  # Enter the text and syntax for the page in the *Content* field. For more information about the wiki syntax, refer to the [WikiSyntax] page.
+  # Click a link in one of the *Labels* fields to see the available list of labels. These labels provide the user with some direction on how relevant the wiki page is to them.
+  # Click one of the following buttons:
+    * *Preview* -- Shows how the wiki page will appear to the user without saving it.
+    * *Save Page* -- Saves the wiki page.
+    * *Discard* -- Deletes the wiki page if it is new, or removes the changes that were made to the wiki since it was opened for editing.
+
+== Tracking Project Tasks on the Issues Tab ==
+
+The *Issues* tab is a great way to keep track of the ongoing features, tasks, and bugs in your project. It allows multiple project members and owners to see what others are currently doing.
+
+After you click the *New Issues* subtab to create a new issue, please note the *Labels* fields. Labels are strings that are meaningful to the project members. When an issue label contains a dash, such as 'Priority-Medium,' it is interpreted as a key-value pair that you can use like a custom field.
+
+  * The prefix before the first dash is the key.
+  * The part after the first dash is the value.
+
+You can configure the issue list to show a column for any prefix. You can also search for the values within a specific custom field by using 'prefix:value.' 
+
+== Sharing your Code on the Download Tab ==
+
+When you're ready to release your code, you can use the *Downloads* tab to upload compressed files. Others can then go to this tab on your project to download the code for their own use.
+
+Be sure to choose the file names carefully before you upload them. The file name will become part of your URL, and you cannot change it later. Include a release number in the name of any file that may change in a later release.
+
+You can delete files from this tab. Otherwise, once you release a file to the open source community, it cannot be unreleased; it can only be marked as 'deprecated.'
+
+== Finding Further Help ==
+
+For general questions, check the [FAQ] wiki page. If you have a question that still isn't answered, bring it up on the [http://groups.google.com/group/google-code-hosting Google Group].
+
+_The content on this page created by Google is licensed under the [http://creativecommons.org/licenses/by/3.0/ Creative Commons Attribution 3.0 License].  User-generated content is not included in this license._

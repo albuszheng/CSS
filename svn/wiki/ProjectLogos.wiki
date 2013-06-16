@@ -1,0 +1,15 @@
+#summary Help for Project Logos.
+
+= Introduction =
+
+You can now customize your project pages with your own logo!
+
+  * The image file should be in PNG, JPG or GIF format and a maximum of 153 x 55 pixels. Larger images will be scaled automatically.
+  * The logo will be shown on the upper left of every page in your project, instead of the default Google Code logo.
+  * Do not include any Google trademarks.
+
+
+= Troubleshooting =
+
+  * Make sure that your image is in PNG, GIF, or JPG format.
+

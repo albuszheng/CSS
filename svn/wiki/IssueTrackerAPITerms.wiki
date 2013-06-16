@@ -1,0 +1,3 @@
+=Google Issue Tracker API Terms and Conditions=
+
+By using this API, you consent to be bound by the Google APIs Terms of Service ("API ToS") at http://developers.google.com/terms .

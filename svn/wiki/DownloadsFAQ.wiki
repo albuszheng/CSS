@@ -1,0 +1,78 @@
+#summary Downloads FAQ
+
+=Downloads FAQ=
+<wiki:toc max_depth="2" />
+
+Google Code no longer offers downloads functionality for new projects. Existing projects with downloads will see no visible changes until January 14, 2014 and will no longer have the ability to create new downloads starting on January 15, 2014.  All existing downloads in these projects will continue to be accessible for the foreseeable future. 
+
+== How do I move my project’s downloads to Google Drive? ==
+
+  # [https://accounts.google.com/SignUp?service=wise&continue=https%3A%2F%2Fdrive.google.com%2F%23&ltmpl=drive Create a new Google Drive account] for your project's downloads.
+  # [http://support.google.com/drive/bin/answer.py?answer=2375091 Create a folder] for your project's downloads. Choose a descriptive name for this folder such as "Downloads for _project-name_".
+  # [http://support.google.com/drive/bin/answer.py?hl=en&answer=2494886 Share this folder] publicly on the web by selecting:
+    * The "Public on the web" visibility option in the Sharing settings dialog.
+    * The "Can view" option for Access.
+  # If your project has multiple owners, give them permissions to manage the downloads by:
+    * Entering their email addresses in the "Add people" text box.
+    * Select the "Can edit" option
+  # [http://support.google.com/drive/bin/answer.py?answer=2424368 Upload the files] in your project's downloads to this folder on Google Drive.
+  # Inform your users that downloads have been moved to Google Drive and give them the link to the folder you created in Step 2 above.
+  # Consider adding a link to the folder (created in Step 2 above) under the External links section in the the left navigation area on your Project Home -> Summary page. You can create the link through the Links section on the Administer->Project Summary page.
+
+== Can I use my existing Google Drive account? ==
+
+Google Drive gives 15 GB of free storage to every user. You can use your existing Google Drive account to host downloads provided you have sufficient unused free storage in this account.
+
+== What if I need more than 15 GB for my project's downloads? ==
+
+Yes, you can [https://www.google.com/settings/storage/ purchase] additional storage for your Google Drive account.
+
+== Can I label files on Google Drive? ==
+
+Google Drive doesn't currently support labels. Depending on the use of labels in your project, you may be able to simulate this functionality by embedding labels in file names or creating separate sub-folders for labels.
+
+== Can I see the download count for downloads on Google Drive? ==
+
+Unfortunately Google Drive doesn't support this feature at present.
+
+== Is there a way to automate the copying  of these files? ==
+
+You can use this Python script to automate the copying of files in your project’s current downloads:
+
+{{{
+import sys
+import feedparser
+import urllib
+import urlparse
+
+def download_from_atom(feed_url):
+  d = feedparser.parse(feed_url)
+  links = [l.href for e in d.entries for l in e.links if l.rel == 'direct']
+  for link in links:
+    print("Downloading %s" % link)
+    filename = urlparse.urlsplit(link).path.split("/")[-1]
+    urllib.urlretrieve(link, filename)
+
+def main(args):
+  if len(args) != 2:
+    print("download_from_atom.py <atom feed>")
+    return  
+  download_from_atom(args[1])
+
+if __name__ == '__main__':
+  main(sys.argv)
+}}}
+
+To use this script:
+  * Copy the script code and save it to a local file named `download_from_atom.py`.
+  * Obtain your project’s Atom feed URL by:
+    * Visiting your project’s home page and clicking in the "Project feeds" link.
+    * Clicking on the "Atom" link for Downloads and copying the URL from your browser’s URL bar.
+  * Run the script with your project’s Atom feed URL as the argument  . You may need to install [https://pypi.python.org/pypi/feedparser/ feed parser] before running.
+  * The files from your downloads will be copied to the local folder from where the script is run.
+
+By default, this script only copies  a maximum of 20 files belonging to active downloads in your project. If you want to copy more than 20 files, use the max-results query parameter.  E.g., the following invocation will copy up to 100 files from a project’s active downloads
+
+{{{
+python download_from_atom.py <atom feed url>?max-results=100
+}}}

@@ -1,0 +1,56 @@
+#summary Wiki FAQ
+#labels Restrict-AddWikiComment-Commit
+= Wiki FAQ =
+<wiki:toc max_depth="2" />
+
+== What syntax are you using in the wiki? ==
+Our wiki syntax is inspired by the MoinMoin wiki syntax, and is more or less a subset of it. We've found that MoinMoin is one of the most popular open source wikis and provides a clean syntax for users. 
+
+Specific examples of how to use the wiki syntax are shown in the "Wiki Markup Help" box on the right-hand side of the wiki page creation and editing pages.
+
+== Why are you not hosting an existing wiki system like MoinMoin, TWiki, or MediaWiki? ==
+Most of the existing wiki products cannot scale to the size and concurrency that we expect, so we had to design one to work to our demands, using Google's infrastructure. In addition, we believe that tools are most useful when they are easy to use and well integrated into the collaborative development environment. So, we are offering a simple wiki that works well with our existing tools. If you find that your project needs some highly specialized formatting, you can link to [http://sites.google.com/ Google Sites], [http://docs.google.com/ Google Docs and Spreadsheets], [http://groups-beta.google.com/ Google Groups], or other pages hosted elsewhere on the Internet.
+
+== What wiki features do you support? ==
+We believe that simplicity helps people collaborate, so we have focused on the most commonly used content formatting features. We support layout of headings, paragraphs, bullet lists, numbered lists, block quotes, and blocks of code. Text phrases can be formatted with bold, italic, strikethrough, superscipt, subscript, or code font. WikiWords are automatically linked, and you can also link to URLs and customize the link text. We support very simple tables for display of data. Optional #summary and #labels lines at the top of each file specify metadata about the page. Our wiki does not support sub-pages, attachments, variables, or macros.
+
+== How do I update pages for my project? ==
+Click on the Wiki tab of your project to see a list of all wiki pages. To add a new page, you must be a project owner or committer; click on the "New Page" link in the toolbar under the main tabs. This will bring you to the wiki editor where you can add content and assign labels to your wiki page. To edit an existing page, first view the page, and then click "Edit this page" in the toolbar. 
+
+== How do I edit a wiki page directly through subversion? ==
+You can also add and edit pages directly through Subversion, since all wiki pages are stored in the /wiki/ directory in your project's Subversion repository. 
+Most developers only check out the /trunk/ directory. To have /wiki/ in your working copy, you might use a command of the form:
+{{{svn checkout https://PROJECTNAME.googlecode.com/svn/wiki/ PROJECTNAME-wiki --username USERNAME}}}
+
+Each wiki page is stored in a corresponding file in the repository's /wiki directory.  E.g., a page named "!UserGuide" would be stored in /wiki/!UserGuide.wiki.  You may edit, delete, or add wiki pages by editing, deleting, or adding files that fit that convention.  The contents of a .wiki file should be plain text that follows the WikiSyntax. Other files and directories under /wiki are currently ignored.
+
+== What types of content is this intended for? ==
+Project roadmaps, how-tos, installation notes, and documentation are great examples of potential wiki pages. Wiki pages are easy for project members to edit quickly and are easier to find than email threads, so use them for documents that your team will refer to and update often.
+
+== Can I download wiki content as HTML? ==
+
+For each page, you can select just part of the page content to view by adding a "show=" parameter to the URL.  For example:
+  * http://code.google.com/p/support/wiki/Feeds?show=content
+  * http://code.google.com/p/support/wiki/Feeds?show=content,nav
+  * http://code.google.com/p/support/wiki/Feeds?show=content,comments
+  * http://code.google.com/p/support/wiki/Feeds?show=nav,content,sidebar
+
+You might also try using this tool: [http://code.google.com/p/google-code-wiki-to-html google-code-wiki-to-html].
+
+== Who can add and edit pages to my wiki? ==
+Only project owners and committers can add and edit wiki pages for a particular project.
+
+== Where is the wiki content stored? ==
+If Subversion is used, all wiki pages are stored in the /wiki/ directory of your project's Subversion repository, as files ending in .wiki (other files and subdirectories will be ignored). That means you can use a Subversion client and your favorite text editor to add and edit wiki pages.
+
+If Mercurial is used,the wiki content is stored `http://wiki.[projectname].googlecode.com/hg/` where `[projectname]` is the name of the specific project. For Git, `http://wiki.[projectname].googlecode.com/git`.
+
+== Where can I find defects for the wiki? ==
+Here is our list of current issues with the wiki. Our top issue right now is that the wiki cache is not updated when a wiki page gets removed from the repository (e.g. when the repository is reset). 
+
+http://code.google.com/p/support/issues/list?can=2&q=component:wiki+type:defect
+
+== Why has all my wiki content disappeared? ==
+The most common cause of wiki content disappearing is when you switch version control systems for your project. Wiki content is stored in version control, and we don't automatically convert version control data for you.
+
+To get your old wiki content back, switch back to your old VCS. If you would like the same wiki content on your new VCS, make a local checkout or clone of your wiki, switch your project to the new VCS, and push the content back. For an example using Mercurial, see [ConvertingSvnToHg here].
